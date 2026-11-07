@@ -169,7 +169,7 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
     _visibleTab = tabInvalid;
     [self showNetworks];
     
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     
     if (![gbStorage objectForKeyedSubscript:@"menu-networks"])
     {
@@ -552,7 +552,7 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
         _lastSorted=ident;
     }
     
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     
     if (![gbStorage objectForKeyedSubscript:@"NSAscendingSortIndicator"])
     {

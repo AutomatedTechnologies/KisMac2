@@ -1641,7 +1641,7 @@ static NSString *WaveNetValidatedSSID(NSString *ssid)
         if (_cacheValid) return _cache;
     }
     
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     
     switch (_isWep)
     {

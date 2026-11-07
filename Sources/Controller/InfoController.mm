@@ -320,7 +320,7 @@ enum _rowIndexes {
     
     [_n sortByColumn:ident order:_ascending];
 
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     
     if (![gbStorage objectForKeyedSubscript:@"NSAscendingSortIndicator"])
     {

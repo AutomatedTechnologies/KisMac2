@@ -59,6 +59,7 @@
 		0042E7A609C0C8B600183F90 /* world.kismap in Resources */ = {isa = PBXBuildFile; fileRef = 0042E7A209C0C8B600183F90 /* world.kismap */; };
 		005B12690730051A00906C36 /* MapControlItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 005B12670730051A00906C36 /* MapControlItem.m */; };
 		00875D1C0708ADB300CACFCB /* WaveHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 00875D1A0708ADB300CACFCB /* WaveHelper.m */; };
+		ACE000011B289F65006B90E1 /* KMImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = ACE000031B289F65006B90E1 /* KMImageCache.m */; };
 		0090AC8606E5E3250096C5FC /* MapControlPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0090AC8406E5E3250096C5FC /* MapControlPanel.m */; };
 		0090B7CC07B2A43D005FEEB1 /* WaveStorageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0090B7CA07B2A43D005FEEB1 /* WaveStorageController.m */; };
 		0093E65506B2A1F300B3357A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0093E65306B2A1F300B3357A /* AddressBook.framework */; };
@@ -158,7 +159,6 @@
 		A5A2F5AE19DDA55B0046299A /* NetworkUnkEnc.tif in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F5A819DDA55B0046299A /* NetworkUnkEnc.tif */; };
 		A5A2F5AF19DDA55B0046299A /* NetworkWEP.tif in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F5A919DDA55B0046299A /* NetworkWEP.tif */; };
 		A5A2F5B019DDA55B0046299A /* NetworkWPA.tif in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F5AA19DDA55B0046299A /* NetworkWPA.tif */; };
-		A5A6FA7E1B289F65006B90E1 /* GBStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A6FA791B289F65006B90E1 /* GBStorage.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -256,6 +256,8 @@
 		005B12670730051A00906C36 /* MapControlItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapControlItem.m; sourceTree = "<group>"; };
 		00875D190708ADB300CACFCB /* WaveHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WaveHelper.h; sourceTree = "<group>"; };
 		00875D1A0708ADB300CACFCB /* WaveHelper.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = WaveHelper.m; sourceTree = "<group>"; };
+		ACE000021B289F65006B90E1 /* KMImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMImageCache.h; sourceTree = "<group>"; };
+		ACE000031B289F65006B90E1 /* KMImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMImageCache.m; sourceTree = "<group>"; };
 		0090AC8306E5E3250096C5FC /* MapControlPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapControlPanel.h; sourceTree = "<group>"; };
 		0090AC8406E5E3250096C5FC /* MapControlPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapControlPanel.m; sourceTree = "<group>"; };
 		0090B7C907B2A43D005FEEB1 /* WaveStorageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaveStorageController.h; sourceTree = "<group>"; };
@@ -425,8 +427,6 @@
 		A5A2F5A819DDA55B0046299A /* NetworkUnkEnc.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NetworkUnkEnc.tif; sourceTree = "<group>"; };
 		A5A2F5A919DDA55B0046299A /* NetworkWEP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NetworkWEP.tif; sourceTree = "<group>"; };
 		A5A2F5AA19DDA55B0046299A /* NetworkWPA.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = NetworkWPA.tif; sourceTree = "<group>"; };
-		A5A6FA781B289F65006B90E1 /* GBStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBStorage.h; sourceTree = "<group>"; };
-		A5A6FA791B289F65006B90E1 /* GBStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBStorage.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -545,6 +545,8 @@
 				0090B7CA07B2A43D005FEEB1 /* WaveStorageController.m */,
 				00875D190708ADB300CACFCB /* WaveHelper.h */,
 				00875D1A0708ADB300CACFCB /* WaveHelper.m */,
+				ACE000021B289F65006B90E1 /* KMImageCache.h */,
+				ACE000031B289F65006B90E1 /* KMImageCache.m */,
 				69DF1ABB0F0D0E40000E9B94 /* KMCommon.h */,
 			);
 			name = Core;
@@ -865,7 +867,6 @@
 		69719DAF0F7E928900949310 /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
-				A5A6FA761B289F65006B90E1 /* GBStorage */,
 			);
 			path = Subprojects;
 			sourceTree = "<group>";
@@ -981,15 +982,6 @@
 			);
 			name = Indicators;
 			path = Resources/Indicators;
-			sourceTree = "<group>";
-		};
-		A5A6FA761B289F65006B90E1 /* GBStorage */ = {
-			isa = PBXGroup;
-			children = (
-				A5A6FA781B289F65006B90E1 /* GBStorage.h */,
-				A5A6FA791B289F65006B90E1 /* GBStorage.m */,
-			);
-			path = GBStorage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1190,13 +1182,13 @@
 				00971F3F06E4FA6F004307EA /* BIView.m in Sources */,
 				00971F5706E4FFBF004307EA /* BISubView.m in Sources */,
 				0097241506E51844004307EA /* BIImageView.m in Sources */,
-				A5A6FA7E1B289F65006B90E1 /* GBStorage.m in Sources */,
 				0097243A06E51A99004307EA /* BITextView.m in Sources */,
 				0090AC8606E5E3250096C5FC /* MapControlPanel.m in Sources */,
 				00E1426E06E62A44009DC179 /* PointView.m in Sources */,
 				00A622AA06FEE4FB005D248A /* Trace.m in Sources */,
 				009D64F306FF73BA00B0F1EC /* MapViewAreaView.mm in Sources */,
 				00875D1C0708ADB300CACFCB /* WaveHelper.m in Sources */,
+				ACE000011B289F65006B90E1 /* KMImageCache.m in Sources */,
 				005B12690730051A00906C36 /* MapControlItem.m in Sources */,
 				0090B7CC07B2A43D005FEEB1 /* WaveStorageController.m in Sources */,
 				00DF456408B1E969003F3C7E /* WaveDriverAirportExtreme.m in Sources */,

@@ -11,7 +11,7 @@
     #import <Security/Security.h>
     #import <CoreServices/CoreServices.h>
 
-    #import "GBStorage.h"
+    #import "KMImageCache.h"
 #endif
 
 #ifdef DEBUG

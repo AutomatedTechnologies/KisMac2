@@ -100,7 +100,7 @@
 	}
     [NSApp beginSheet:probeSheet modalForWindow:[WaveHelper mainWindow] modalDelegate:[WaveHelper mainWindow] didEndSelector:nil contextInfo:nil];
     
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     
     if (![gbStorage objectForKeyedSubscript:@"greengem"])
     {

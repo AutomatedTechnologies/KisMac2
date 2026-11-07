@@ -47,7 +47,7 @@ static NSImage* _networkStrange;
     self = [super init];
     if (self) {
         
-        GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+        KMImageCache *gbStorage = [KMImageCache sharedCache];
         
         if (![gbStorage objectForKeyedSubscript:@"NetworkUnkEnc.tif"])
         {

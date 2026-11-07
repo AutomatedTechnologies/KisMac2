@@ -137,7 +137,7 @@
         _scanning = YES;
         [_window setDocumentEdited:YES];
         
-        GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+        KMImageCache *gbStorage = [KMImageCache sharedCache];
         
         if (![gbStorage objectForKeyedSubscript:@"toolbar-stop-scan"])
         {
@@ -164,7 +164,7 @@
 	[self stopActiveAttacks];
     result=[scanner stopScanning];
     
-    GBStorageController *gbStorage = [GBStorageController sharedControllerForNamespace:kGBStorageDefaultNamespace];
+    KMImageCache *gbStorage = [KMImageCache sharedCache];
     if (![gbStorage objectForKeyedSubscript:@"toolbar-start-scan"])
     {
         NSImage *image = [NSImage imageNamed:@"toolbar-start-scan"];
