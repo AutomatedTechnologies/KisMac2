@@ -23,8 +23,8 @@ jobs:
         run: |
           SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
           mkdir -p "$SHIM/BIGL" "$SHIM/BIGeneric"
-          ln -s "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Submodules/BIGL/Classes/"*.h "$SHIM/BIGL/"
-          ln -s "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Classes/"*.h "$SHIM/BIGeneric/"
+          find "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Submodules/BIGL/Classes" -name '*.h' -exec ln -s {} "$SHIM/BIGL/" \;
+          find "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Classes" -name '*.h' -exec ln -s {} "$SHIM/BIGeneric/" \;
           ln -s "$GITHUB_WORKSPACE/Subprojects/GBStorage/GBStorage.h" "$SHIM/"
           ls -la "$SHIM" "$SHIM/BIGL" "$SHIM/BIGeneric"
 
