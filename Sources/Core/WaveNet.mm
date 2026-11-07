@@ -197,7 +197,7 @@ NSInteger lengthSort(id string1, id string2, void *context)
     for (NSInteger x=0; x<6; ++x)
         _rawID[x] = bssid[x];
     
-    _SSID=[coder decodeObjectForKey:@"aSSID"];
+    _SSID=WaveNetValidatedSSID([coder decodeObjectForKey:@"aSSID"]);
     _BSSID=[coder decodeObjectForKey:@"aBSSID"];
     if (![_BSSID isEqualToString:@"<no bssid>"]) {
         if (_BSSID!=nil && sscanf([_BSSID UTF8String], "%2lX:%2lX:%2lX:%2lX:%2lX:%2lX", &bssid[0], &bssid[1], &bssid[2], &bssid[3], &bssid[4], &bssid[5])!=6)
@@ -359,6 +359,18 @@ NSInteger lengthSort(id string1, id string2, void *context)
     return self;
 }
 
+// F-01: 802.11 SSIDs are at most 32 octets. The live beacon parser enforces this,
+// but SSIDs loaded from .kisMAC/plist file data had no cap at all, and an
+// over-long SSID later overflowed fixed export buffers. Validate at ingestion.
+static NSString *WaveNetValidatedSSID(NSString *ssid)
+{
+	NSData *utf8 = [ssid dataUsingEncoding:NSUTF8StringEncoding];
+	if (!utf8 || [utf8 length] <= 32) return ssid;
+	DBNSLog(@"SSID from file data exceeds 32 bytes; truncating.");
+	NSString *truncated = [[NSString alloc] initWithBytes:[utf8 bytes] length:32 encoding:NSUTF8StringEncoding];
+	return truncated ?: @"";
+}
+
 - (id)initWithDataDictionary:(NSDictionary *)dict {
     waypoint wp;
     char ns_dir, ew_dir;
@@ -413,7 +425,7 @@ NSInteger lengthSort(id string1, id string2, void *context)
     for (NSInteger x=0; x<6; ++x)
         _rawID[x] = bssid[x];
     
-    _SSID  = dict[@"SSID"];
+    _SSID  = WaveNetValidatedSSID(dict[@"SSID"]);
     _SSIDs = dict[@"SSIDs"];
     _BSSID=dict[@"BSSID"];
     if (![_BSSID isEqualToString:@"<no bssid>"]) {

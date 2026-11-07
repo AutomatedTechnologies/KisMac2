@@ -532,7 +532,7 @@ struct pointCoords {
     char c;
     NSUInteger i,j;
 	double lat,lon=0;
-	char netname[80],netesc[80];
+	char netname[80],netesc[400];	// F-01: netesc sized for worst-case entity expansion (79 * 5 + NUL)
     
 	NSParameterAssert(filename);
 	NSParameterAssert(container);
@@ -672,7 +672,12 @@ struct pointCoords {
 		
         if (sscanf([[net latitude] UTF8String], "%lf%c", &f, &c)==2) lat = f * (c == 'N' ? 1 : -1);		
         if (sscanf([[net longitude] UTF8String], "%lf%c", &f, &c)==2) lon = f * (c == 'E' ? 1 : -1);
-		strcpy(netname,[[net SSID] cStringUsingEncoding: NSUTF8StringEncoding]);
+		// F-01: SSIDs are attacker-controlled (live RF or file-supplied) and had no
+		// length cap outside the beacon parser. Bounded copy only; truncate loudly.
+		const char *rawSSID = [[net SSID] cStringUsingEncoding: NSUTF8StringEncoding];
+		if (!rawSSID) rawSSID = "";
+		if (strlcpy(netname, rawSSID, sizeof(netname)) >= sizeof(netname))
+			DBNSLog(@"KML Export: SSID truncated to fit export buffer.");
 		
 		// now escape any ampersands or < or >...
         // also, ascii chars below ascii value 32 are not valid in xml so skip them
@@ -682,30 +687,30 @@ struct pointCoords {
 		for (j=0;j<strlen(netname);++j) {
 			switch(netname[j]) {
 				case '&':
-					strcat(netesc,"&amp;");
+					strlcat(netesc,"&amp;",sizeof(netesc));
 					break;
 				case '<':
-					strcat(netesc,"&lt;");
+					strlcat(netesc,"&lt;",sizeof(netesc));
 					break;
 				case '>':
-					strcat(netesc,"&gt;");
+					strlcat(netesc,"&gt;",sizeof(netesc));
 					break;
 				default:
                     if (netname[j] < 32) {
                         DBNSLog(@"KML Export: Invalid character found, skipping.");
                     }
                     else {
-                         strncat(netesc,netname+j,1);
+                         strlcat(netesc,(char[]){netname[j],0},sizeof(netesc));
                     }
 
 			}
 		}
-		strcpy(netname,netesc);
+		// F-01: escaped text can exceed netname[80]; it is printed from netesc below.
 
 		if (lat != 100) {
 			// we have a valid lat/long pair - skip any that don't
 			fprintf(fd,"	<Placemark>\n");
-			fprintf(fd,"		<name>%s</name>\n",netname);
+			fprintf(fd,"		<name>%s</name>\n",netesc);
 			fprintf(fd,"		<description><![CDATA[");
 			fprintf(fd,"<b>Signal:</b> %ld", (long)[net maxSignal]);
 			if (strcmp([[net BSSID] UTF8String],"<no bssid>") != 0) {
