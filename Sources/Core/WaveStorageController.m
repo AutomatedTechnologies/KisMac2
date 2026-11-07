@@ -56,7 +56,7 @@ struct pointCoords {
 // outside the list fails the load closed. WaveNet/WaveClient declare
 // NSSecureCoding and decode their own fields with matching allowlists.
 + (id)unarchiveLegacyObjectWithData:(NSData*)rawData {
-	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:rawData error:nil];
+	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:rawData];
 	if (!unarchiver) return nil;
 	unarchiver.requiresSecureCoding = YES;
 	NSSet *classes = [NSSet setWithObjects:
