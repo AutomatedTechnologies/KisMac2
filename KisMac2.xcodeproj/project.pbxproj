@@ -23,6 +23,18 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		E50000000000000000000003 /* NUTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000002 /* NUTarget.m */; };
+		E50000000000000000000006 /* NUJournal.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000005 /* NUJournal.m */; };
+		E50000000000000000000009 /* NUJournalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000008 /* NUJournalViewController.m */; };
+		E50000000000000000000012 /* NUDiagnoseEngines.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000011 /* NUDiagnoseEngines.m */; };
+		E50000000000000000000015 /* NUDiagnoseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000014 /* NUDiagnoseViewController.m */; };
+		E50000000000000000000018 /* NUAirPort.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000017 /* NUAirPort.m */; };
+		E50000000000000000000021 /* NUManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000020 /* NUManageViewController.m */; };
+		E50000000000000000000024 /* NUShellController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000023 /* NUShellController.m */; };
+		E50000000000000000000026 /* icon-networks.png in Resources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000025 /* icon-networks.png */; };
+		E50000000000000000000028 /* icon-details.png in Resources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000027 /* icon-details.png */; };
+		E50000000000000000000030 /* icon-graph.png in Resources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000029 /* icon-graph.png */; };
+		E50000000000000000000032 /* icon-save.png in Resources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000031 /* icon-save.png */; };
 		002E7DFC06A86C6F00C9D931 /* ImportController.m in Sources */ = {isa = PBXBuildFile; fileRef = 002E7DF806A86C6F00C9D931 /* ImportController.m */; };
 		0035337A06A5DD5700AB4577 /* example.dump in Resources */ = {isa = PBXBuildFile; fileRef = 0035332E06A5DD5700AB4577 /* example.dump */; };
 		0035337D06A5DD5700AB4577 /* vendor.db in Resources */ = {isa = PBXBuildFile; fileRef = 0035333106A5DD5700AB4577 /* vendor.db */; };
@@ -182,6 +194,26 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E50000000000000000000001 /* NUTarget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUTarget.h; sourceTree = "<group>"; };
+		E50000000000000000000002 /* NUTarget.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUTarget.m; sourceTree = "<group>"; };
+		E50000000000000000000004 /* NUJournal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUJournal.h; sourceTree = "<group>"; };
+		E50000000000000000000005 /* NUJournal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUJournal.m; sourceTree = "<group>"; };
+		E50000000000000000000007 /* NUJournalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUJournalViewController.h; sourceTree = "<group>"; };
+		E50000000000000000000008 /* NUJournalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUJournalViewController.m; sourceTree = "<group>"; };
+		E50000000000000000000010 /* NUDiagnoseEngines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUDiagnoseEngines.h; sourceTree = "<group>"; };
+		E50000000000000000000011 /* NUDiagnoseEngines.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUDiagnoseEngines.m; sourceTree = "<group>"; };
+		E50000000000000000000013 /* NUDiagnoseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUDiagnoseViewController.h; sourceTree = "<group>"; };
+		E50000000000000000000014 /* NUDiagnoseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUDiagnoseViewController.m; sourceTree = "<group>"; };
+		E50000000000000000000016 /* NUAirPort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUAirPort.h; sourceTree = "<group>"; };
+		E50000000000000000000017 /* NUAirPort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUAirPort.m; sourceTree = "<group>"; };
+		E50000000000000000000019 /* NUManageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUManageViewController.h; sourceTree = "<group>"; };
+		E50000000000000000000020 /* NUManageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUManageViewController.m; sourceTree = "<group>"; };
+		E50000000000000000000022 /* NUShellController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUShellController.h; sourceTree = "<group>"; };
+		E50000000000000000000023 /* NUShellController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUShellController.m; sourceTree = "<group>"; };
+		E50000000000000000000025 /* icon-networks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon-networks.png; sourceTree = "<group>"; };
+		E50000000000000000000027 /* icon-details.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon-details.png; sourceTree = "<group>"; };
+		E50000000000000000000029 /* icon-graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon-graph.png; sourceTree = "<group>"; };
+		E50000000000000000000031 /* icon-save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon-save.png; sourceTree = "<group>"; };
 		002E7DF706A86C6F00C9D931 /* ImportController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ImportController.h; path = Sources/WindowControllers/ImportController.h; sourceTree = SOURCE_ROOT; };
 		002E7DF806A86C6F00C9D931 /* ImportController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ImportController.m; path = Sources/WindowControllers/ImportController.m; sourceTree = SOURCE_ROOT; };
 		0035332E06A5DD5700AB4577 /* example.dump */ = {isa = PBXFileReference; lastKnownFileType = file; path = example.dump; sourceTree = "<group>"; };
@@ -438,6 +470,81 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E50000000000000000000035 /* TargetKit */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000001 /* NUTarget.h */,
+				E50000000000000000000002 /* NUTarget.m */,
+			);
+			path = Sources/TargetKit;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000036 /* Journal */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000004 /* NUJournal.h */,
+				E50000000000000000000005 /* NUJournal.m */,
+				E50000000000000000000007 /* NUJournalViewController.h */,
+				E50000000000000000000008 /* NUJournalViewController.m */,
+			);
+			path = Sources/Journal;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000037 /* Diagnose */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000010 /* NUDiagnoseEngines.h */,
+				E50000000000000000000011 /* NUDiagnoseEngines.m */,
+				E50000000000000000000013 /* NUDiagnoseViewController.h */,
+				E50000000000000000000014 /* NUDiagnoseViewController.m */,
+			);
+			path = Sources/Diagnose;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000038 /* Manage */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000016 /* NUAirPort.h */,
+				E50000000000000000000017 /* NUAirPort.m */,
+				E50000000000000000000019 /* NUManageViewController.h */,
+				E50000000000000000000020 /* NUManageViewController.m */,
+			);
+			path = Sources/Manage;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000039 /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000022 /* NUShellController.h */,
+				E50000000000000000000023 /* NUShellController.m */,
+				E50000000000000000000033 /* Resources */,
+			);
+			path = Sources/Shell;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000033 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000025 /* icon-networks.png */,
+				E50000000000000000000027 /* icon-details.png */,
+				E50000000000000000000029 /* icon-graph.png */,
+				E50000000000000000000031 /* icon-save.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E50000000000000000000034 /* NetworkUtility */ = {
+			isa = PBXGroup;
+			children = (
+				E50000000000000000000035 /* TargetKit */,
+				E50000000000000000000036 /* Journal */,
+				E50000000000000000000037 /* Diagnose */,
+				E50000000000000000000038 /* Manage */,
+				E50000000000000000000039 /* Shell */,
+			);
+			name = NetworkUtility;
+			sourceTree = "<group>";
+		};
 		0035332D06A5DD5700AB4577 /* Generic */ = {
 			isa = PBXGroup;
 			children = (
@@ -736,6 +843,7 @@
 				003533FE06A5DD8500AB4577 /* Views */,
 				0035340E06A5DD8500AB4577 /* WaveDrivers */,
 				0035341F06A5DD8500AB4577 /* WindowControllers */,
+				E50000000000000000000034 /* NetworkUtility */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1029,6 +1137,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E50000000000000000000026 /* icon-networks.png in Resources */,
+				E50000000000000000000028 /* icon-details.png in Resources */,
+				E50000000000000000000030 /* icon-graph.png in Resources */,
+				E50000000000000000000032 /* icon-save.png in Resources */,
 				0035337A06A5DD5700AB4577 /* example.dump in Resources */,
 				A529ADA21A20A4B400CD8E1E /* PrefsMap.xib in Resources */,
 				A5A2F5B019DDA55B0046299A /* NetworkWPA.tif in Resources */,
@@ -1121,6 +1233,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E50000000000000000000003 /* NUTarget.m in Sources */,
+				E50000000000000000000006 /* NUJournal.m in Sources */,
+				E50000000000000000000009 /* NUJournalViewController.m in Sources */,
+				E50000000000000000000012 /* NUDiagnoseEngines.m in Sources */,
+				E50000000000000000000015 /* NUDiagnoseViewController.m in Sources */,
+				E50000000000000000000018 /* NUAirPort.m in Sources */,
+				E50000000000000000000021 /* NUManageViewController.m in Sources */,
+				E50000000000000000000024 /* NUShellController.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				0035342C06A5DD8500AB4577 /* InfoController.mm in Sources */,
 				0035342E06A5DD8500AB4577 /* ScanController.m in Sources */,

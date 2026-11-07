@@ -1,0 +1,106 @@
+name: Network Utility V1 staged build
+
+# Staged MVP build of the Network Utility (Switchboard V1) shell on the
+# remediated KisMac tree: shell + Discover (hosted, frozen) + Manage READ +
+# Diagnose subset + Journal. Adapted from the proven build-test.yml —
+# identical include shim, guarded BIZoomView CI patch, workspace build,
+# permissions and survival-artifact pattern. The KisMac test-build
+# workflow (build-test.yml) is untouched.
+
+on:
+  push:
+    branches: [network-utility-v1]
+  workflow_dispatch:
+
+# The publish step creates a GitHub Release with GITHUB_TOKEN; the repo's
+# default token permissions do not include contents: write (proven by the
+# KisMac run #13 failure), so it is granted explicitly here.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select Xcode
+        run: |
+          xcodebuild -version
+          xcrun --show-sdk-path
+
+      - name: Prepare framework-style include shim
+        run: |
+          SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
+          mkdir -p "$SHIM/BIGL" "$SHIM/BIGeneric"
+          find "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Submodules/BIGL/Classes" -name '*.h' -exec ln -s {} "$SHIM/BIGL/" \;
+          find "$GITHUB_WORKSPACE/Subprojects/BIGeneric/Classes" -name '*.h' -exec ln -s {} "$SHIM/BIGeneric/" \;
+          ln -s "$GITHUB_WORKSPACE/Subprojects/GBStorage/GBStorage.h" "$SHIM/"
+          ls -la "$SHIM" "$SHIM/BIGL" "$SHIM/BIGeneric"
+
+      - name: Apply CI source patches (submodule working tree)
+        run: |
+          # BIZoomView.m lives in the BIGeneric submodule (IGRSoft/BIGeneric);
+          # its contents cannot be committed through this repo, so the fix is
+          # applied to the checked-out working tree: NSView _frame ivar ->
+          # self.frame, 10 read sites (macOS 15.5 SDK no longer exposes the
+          # ivar; KisMac run #12 diagnostic). Guarded: the step fails unless
+          # exactly 10 sites exist before and 0 remain after.
+          F="Subprojects/BIGeneric/Classes/BIZoomView.m"
+          BEFORE=$(grep -c '_frame' "$F")
+          perl -pi -e 's/\b_frame\b/self.frame/g' "$F"
+          AFTER=$(grep -c 'self\.frame' "$F")
+          LEFT=$(grep -c '_frame' "$F" || true)
+          echo "BIZoomView.m CI patch: sites_before=$BEFORE self_frame_after=$AFTER leftover=$LEFT"
+          test "$BEFORE" = "10" && test "$AFTER" = "10" && test "$LEFT" = "0"
+
+      - name: Build KisMac2 with Network Utility shell (Release, unsigned, 10.13 floor)
+        run: |
+          set -o pipefail
+          SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
+          xcodebuild -workspace KisMac2.xcworkspace -scheme KisMac2 \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO \
+            MACOSX_DEPLOYMENT_TARGET=10.13 \
+            ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO \
+            "HEADER_SEARCH_PATHS=$SHIM \$(inherited)" \
+            build 2>&1 | tee xcodebuild.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log
+
+      - name: Package app as zip
+        if: success()
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -name 'KisMac2.app' -o -name 'KisMAC.app' | grep -v '\.dSYM' | head -1)
+          if [ -z "$APP" ]; then
+            APP=$(find . -name '*.app' -path '*Release*' | head -1)
+          fi
+          echo "Built app: $APP"
+          test -n "$APP"
+          ditto -c -k --keepParent "$APP" KisMac-test.zip
+          ls -la KisMac-test.zip
+
+      - name: Upload staged build zip (survival copy)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: network-utility-zip
+          path: KisMac-test.zip
+
+      - name: Publish prerelease with staged build
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create staged-v1-${{ github.run_number }} KisMac-test.zip \
+            --prerelease \
+            --title "Network Utility V1 staged build ${{ github.run_number }}" \
+            --notes "STAGED INTERNAL BUILD — NOT A RELEASE. Network Utility (Switchboard V1) shell on the remediated KisMac tree: Discover (hosted scanner) + Manage READ for AirPort base stations + Diagnose (Ping, Netstat, Traceroute, Speed Test) + Journal. CI-built on macos-15; NOT yet verified on the High Sierra rig. Detroit Automation Academy."
