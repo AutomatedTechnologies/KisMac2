@@ -134,10 +134,7 @@
 		A529ADA51A20A4B400CD8E1E /* PrefsTraffic.xib in Resources */ = {isa = PBXBuildFile; fileRef = A529AD921A20A4B400CD8E1E /* PrefsTraffic.xib */; };
 		A529ADA61A20A4B400CD8E1E /* WayPointDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = A529AD941A20A4B400CD8E1E /* WayPointDialog.xib */; };
 		A529ADA71A20A4B400CD8E1E /* wepInjection.xib in Resources */ = {isa = PBXBuildFile; fileRef = A529AD961A20A4B400CD8E1E /* wepInjection.xib */; };
-		A5353826180ABCE1008BB6A1 /* md4.c in Sources */ = {isa = PBXBuildFile; fileRef = A53536B4180ABCE0008BB6A1 /* md4.c */; };
-		A5353827180ABCE1008BB6A1 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = A53536B5180ABCE0008BB6A1 /* md5.c */; };
 		A5353972180B15B9008BB6A1 /* DESSupport.c in Sources */ = {isa = PBXBuildFile; fileRef = A5353970180B15B9008BB6A1 /* DESSupport.c */; };
-		A5353975180B1C99008BB6A1 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = A5353974180B1C99008BB6A1 /* sha1.c */; };
 		A54B4CDD1B6F847B003279DD /* DownloadMap.xib in Resources */ = {isa = PBXBuildFile; fileRef = A54B4CDB1B6F847B003279DD /* DownloadMap.xib */; };
 		A57E644D1607BC9700BE1BCA /* AirCrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64391607BC9700BE1BCA /* AirCrackWrapper.m */; };
 		A57E644F1607BC9700BE1BCA /* LEAP.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E643B1607BC9700BE1BCA /* LEAP.m */; };
@@ -380,12 +377,9 @@
 		A529AD931A20A4B400CD8E1E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PrefsTraffic.xib; sourceTree = "<group>"; };
 		A529AD951A20A4B400CD8E1E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/WayPointDialog.xib; sourceTree = "<group>"; };
 		A529AD971A20A4B400CD8E1E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/wepInjection.xib; sourceTree = "<group>"; };
-		A53536B4180ABCE0008BB6A1 /* md4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md4.c; sourceTree = "<group>"; };
-		A53536B5180ABCE0008BB6A1 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
 		A535396B180B073D008BB6A1 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A5353970180B15B9008BB6A1 /* DESSupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DESSupport.c; sourceTree = "<group>"; };
 		A5353971180B15B9008BB6A1 /* DESSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DESSupport.h; sourceTree = "<group>"; };
-		A5353974180B1C99008BB6A1 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		A537417719DD457900434C6E /* dmgBackground.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = dmgBackground.tiff; sourceTree = "<group>"; };
 		A537418D19DD4AAC00434C6E /* WaveHelperTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaveHelperTest.m; sourceTree = "<group>"; };
 		A537418E19DD4AAC00434C6E /* WaveNetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaveNetTest.m; sourceTree = "<group>"; };
@@ -422,10 +416,6 @@
 		A581FC2B177B36A800C05CE9 /* FCS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FCS.m; sourceTree = "<group>"; };
 		A585F7791771DB7100045928 /* HTTPStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPStream.h; sourceTree = "<group>"; };
 		A585F77A1771DB7100045928 /* HTTPStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPStream.m; sourceTree = "<group>"; };
-		A599CC9B1B82349000C48A5D /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
-		A599CC9C1B82349000C48A5D /* md4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md4.h; sourceTree = "<group>"; };
-		A599CC9D1B82349000C48A5D /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		A599CC9E1B82349000C48A5D /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		A59E42D71796ADBF00B1139F /* updateHelpIndex.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = updateHelpIndex.command; sourceTree = SOURCE_ROOT; };
 		A5A2F59519DD74C20046299A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
 		A5A2F59919DD9EB40046299A /* spin@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "spin@2x.gif"; sourceTree = "<group>"; };
@@ -876,7 +866,6 @@
 			isa = PBXGroup;
 			children = (
 				A5A6FA761B289F65006B90E1 /* GBStorage */,
-				A5353659180ABCDD008BB6A1 /* polarssl */,
 			);
 			path = Subprojects;
 			sourceTree = "<group>";
@@ -944,37 +933,6 @@
 				6C94AA2E0ADF3FBC001BE161 /* GPSSatInfo.m */,
 			);
 			path = GPSSatInfo;
-			sourceTree = "<group>";
-		};
-		A5353659180ABCDD008BB6A1 /* polarssl */ = {
-			isa = PBXGroup;
-			children = (
-				A5353668180ABCDF008BB6A1 /* include */,
-				A535369A180ABCE0008BB6A1 /* library */,
-			);
-			path = polarssl;
-			sourceTree = "<group>";
-		};
-		A5353668180ABCDF008BB6A1 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				A599CC9B1B82349000C48A5D /* config.h */,
-				A599CC9C1B82349000C48A5D /* md4.h */,
-				A599CC9D1B82349000C48A5D /* md5.h */,
-				A599CC9E1B82349000C48A5D /* sha1.h */,
-			);
-			name = include;
-			path = include/polarssl;
-			sourceTree = "<group>";
-		};
-		A535369A180ABCE0008BB6A1 /* library */ = {
-			isa = PBXGroup;
-			children = (
-				A5353974180B1C99008BB6A1 /* sha1.c */,
-				A53536B4180ABCE0008BB6A1 /* md4.c */,
-				A53536B5180ABCE0008BB6A1 /* md5.c */,
-			);
-			path = library;
 			sourceTree = "<group>";
 		};
 		A537418319DD4A8B00434C6E /* Tests */ = {
@@ -1200,7 +1158,6 @@
 				0035342E06A5DD8500AB4577 /* ScanController.m in Sources */,
 				A581FC2C177B36AC00C05CE9 /* FCS.m in Sources */,
 				0035342F06A5DD8500AB4577 /* ScanControllerMenus.m in Sources */,
-				A5353827180ABCE1008BB6A1 /* md5.c in Sources */,
 				0035343106A5DD8500AB4577 /* ScanControllerPrivate.m in Sources */,
 				0035343306A5DD8500AB4577 /* ScanControllerScriptable.m in Sources */,
 				0035343506A5DD8500AB4577 /* TrafficController.mm in Sources */,
@@ -1256,7 +1213,6 @@
 				69AF11840E4B292800B1D770 /* rtl8187.mm in Sources */,
 				69AF11910E4B29C500B1D770 /* WaveDriverUSB.mm in Sources */,
 				69AF11930E4B29C500B1D770 /* WaveDriverUSBRalinkRT73.mm in Sources */,
-				A5353975180B1C99008BB6A1 /* sha1.c in Sources */,
 				69AF11950E4B29C500B1D770 /* WaveDriverUSBRalinkRT2570.mm in Sources */,
 				69AF11970E4B29C500B1D770 /* WaveDriverUSBRealtekRTL8187.mm in Sources */,
 				69A9B31F0F04D7C700D1E817 /* WavePlugin.m in Sources */,
@@ -1265,7 +1221,6 @@
 				69B54B300F0698C600AB7E6E /* WavePluginInjecting.m in Sources */,
 				69BFC5770F077867008DB1AF /* WavePluginAuthenticationFlood.m in Sources */,
 				69BFC5F30F078532008DB1AF /* WavePluginBeaconFlood.m in Sources */,
-				A5353826180ABCE1008BB6A1 /* md4.c in Sources */,
 				694A888D0F3CD87E006B819C /* WavePcapDump.m in Sources */,
 				6C461C6F12CEC58100156CBF /* WavePluginMidi.m in Sources */,
 				A57E644D1607BC9700BE1BCA /* AirCrackWrapper.m in Sources */,
@@ -1463,7 +1418,6 @@
 				GCC_PREFIX_HEADER = KisMAC_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Subprojects/polarssl/include",
 					"$(SRCROOT)/Subprojects/BIGeneric/**",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
@@ -1565,7 +1519,6 @@
 				GCC_PREFIX_HEADER = KisMAC_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/Subprojects/polarssl/include",
 					"$(SRCROOT)/Subprojects/BIGeneric/**",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;

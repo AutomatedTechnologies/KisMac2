@@ -32,8 +32,8 @@
 #include <string.h>
 #include <assert.h>
 #include "80211b.h"
-#include "md5.h"
-#include "sha1.h"
+#include <CommonCrypto/CommonDigest.h>	// F-02: polarssl removed
+#include <CommonCrypto/CommonHMAC.h>
 /*
  * Function: hmac_md5 from rfc2104; uses an MD5 library 
  */ 
@@ -43,42 +43,11 @@ void fast_hmac_md5 (
     unsigned char *key, NSInteger key_len,
     void * digest) 
 { 
-    md5_context context;
-    unsigned char k_ipad[65]; /* inner padding - key XORd with ipad */
-    unsigned char k_opad[65]; /* outer padding - key XORd with opad */
-    NSInteger i;
-    
-    /*
-     * the HMAC_MD5 transform looks like: 
-     * 
-     *   MD5(K XOR opad, MD5(K XOR ipad, text)) 
-     * 
-     * where K is an n byte key
-     * ipad is the byte 0x36 repeated 64 times
-     * opad is the byte 0x5c repeated 64 times
-     * and text is the data being protected  
-     */
-     
-    /* start out by storing key in pads */
-    for (i = 0; i < key_len; ++i) {
-        k_ipad[i] = key[i] ^ 0x36; 
-        k_opad[i] = key[i] ^ 0x5c;
-    } 
-
-    memset(&k_ipad[key_len], 0x36, sizeof k_ipad - key_len); 
-    memset(&k_opad[key_len], 0x5c, sizeof k_opad - key_len); 
-    
-    /* perform inner MD5 */
-    md5_starts(&context); /* init context for 1st pass */
-    md5_update(&context, k_ipad, 64);  /* start with inner pad*/
-    md5_update(&context, text, text_len); /* then text of datagram */
-    md5_finish(&context, digest); /* finish up 1st pass */
-    
-    /* perform outer MD5 */
-    md5_starts(&context); /* init context for 2nd pass */
-    md5_update(&context, (const unsigned char*)k_opad, 64);  /* start with outer pad */
-    md5_update(&context, (const unsigned char*)digest, 16); /* then results of 1st hash */
-	md5_finish(&context, digest); /* finish up 2nd pass */
+    // F-02: the hand-rolled HMAC (formerly over polarssl contexts) is exactly
+    // CCHmac. Output is identical for every input the original handled;
+    // CCHmac additionally handles keys longer than the 64-byte block
+    // per RFC 2104 instead of overrunning the pad buffers.
+    CCHmac(kCCHmacAlgMD5, key, key_len, text, text_len, digest);
 } 
 
 void hmac_md5 (
@@ -86,97 +55,21 @@ void hmac_md5 (
     unsigned char *key, NSInteger key_len,
     void * digest) 
 { 
-    md5_context context;
-    unsigned char k_ipad[65]; /* inner padding - key XORd with ipad */
-    unsigned char k_opad[65]; /* outer padding - key XORd with opad */
-    NSInteger i;
-    
-    /* if key is longer than 64 bytes reset it to key=MD5(key) */ 
-    if (key_len > 64) { 
-        md5_context tctx;
-        
-        md5_starts(&tctx);
-        md5_update(&tctx, key, key_len);
-        md5_finish(&tctx, key);
-        
-        //key = tctx.digest; 
-        key_len = 16;
-    } 
-    
-    /*
-     * the HMAC_MD5 transform looks like: 
-     * 
-     *   MD5(K XOR opad, MD5(K XOR ipad, text)) 
-     * 
-     * where K is an n byte key
-     * ipad is the byte 0x36 repeated 64 times
-     * opad is the byte 0x5c repeated 64 times
-     * and text is the data being protected  
-     */
-     
-    /* start out by storing key in pads */
-    memset(k_ipad, 0, sizeof k_ipad);
-    memset(k_opad, 0, sizeof k_opad);
-    memcpy(k_ipad, key, key_len);
-    memcpy(k_opad, key, key_len);
-     
-    /* XOR key with ipad and opad values */
-    for (i = 0; i < 64; ++i) {
-        k_ipad[i] ^= 0x36;
-        k_opad[i] ^= 0x5c; 
-    } 
-    
-    /* perform inner MD5 */
-    md5_starts(&context); /* init context for 1st pass */
-    md5_update(&context, k_ipad, 64);  /* start with inner pad*/
-    md5_update(&context, text, text_len); /* then text of datagram */
-    md5_finish(&context, digest); /* finish up 1st pass */
-    //memcpy(digest, context.digest, 16); 
-    
-    /* perform outer MD5 */
-    md5_starts(&context); /* init context for 2nd pass */
-    md5_update(&context, (const unsigned char*)k_opad, 64);  /* start with outer pad */
-    md5_update(&context, (const unsigned char*)digest, 16); /* then results of 1st hash */
-    md5_finish(&context, digest); /* finish up 2nd pass */
-    //memcpy(digest, context.digest, 16);
+    // F-02: the hand-rolled HMAC (formerly over polarssl contexts) is exactly
+    // CCHmac. Output is identical for every input the original handled;
+    // CCHmac additionally handles keys longer than the 64-byte block
+    // per RFC 2104 instead of overrunning the pad buffers.
+    // (The original also rewrote a >64-byte key in the caller's buffer as a
+    // side effect; no caller relied on that, and CCHmac does not mutate the key.)
+    CCHmac(kCCHmacAlgMD5, key, key_len, text, text_len, digest);
 } 
 
 void fast_hmac_sha1( unsigned char *text, NSInteger text_len, unsigned char *key, NSInteger key_len, unsigned char *digest) {
-    sha1_context context;
-    unsigned char k_ipad[65]; /* inner padding - key XORd with ipad */ 
-    unsigned char k_opad[65]; /* outer padding - key XORd with opad */
-    NSInteger i; 
-    
-    /* 
-     * the HMAC_SHA1 transform looks like: 
-     * 
-     * SHA1(K XOR opad, SHA1(K XOR ipad, text))
-     *
-     * where K is an n byte key
-     * ipad is the byte 0x36 repeated 64 times
-     * opad is the byte 0x5c repeated 64 times 
-     * and text is the data being protected  */ 
-     
-    /* XOR key with ipad and opad values */ 
-    for (i = 0; i < key_len; ++i) {
-        k_ipad[i] = key[i] ^ 0x36; 
-        k_opad[i] = key[i] ^ 0x5c;
-    } 
-
-    memset(&k_ipad[key_len], 0x36, sizeof k_ipad - key_len); 
-    memset(&k_opad[key_len], 0x5c, sizeof k_opad - key_len); 
-    
-    /* perform inner SHA1*/
-    sha1_starts(&context); /* init context for 1st pass */
-    sha1_update(&context, k_ipad, 64); /* start with inner pad */
-    sha1_update(&context, text, text_len); /* then text of datagram */
-    sha1_finish(&context, digest); /* finish up 1st pass */
-    
-    /* perform outer SHA1 */ 
-    sha1_starts(&context); /* init context for 2nd pass */
-    sha1_update(&context, k_opad, 64); /* start with outer pad */
-    sha1_update(&context, digest, 20); /* then results of 1st hash */
-    sha1_finish(&context, digest); /* finish up 2nd pass */
+    // F-02: the hand-rolled HMAC (formerly over polarssl contexts) is exactly
+    // CCHmac. Output is identical for every input the original handled;
+    // CCHmac additionally handles keys longer than the 64-byte block
+    // per RFC 2104 instead of overrunning the pad buffers.
+    CCHmac(kCCHmacAlgSHA1, key, key_len, text, text_len, digest);
 }
 
 
@@ -184,56 +77,11 @@ void hmac_sha1( unsigned char *text, NSInteger text_len,
     unsigned char *key, NSInteger key_len,
     unsigned char *digest) 
 {
-    sha1_context context;
-    unsigned char k_ipad[65]; /* inner padding - key XORd with ipad */ 
-    unsigned char k_opad[65]; /* outer padding - key XORd with opad */
-    NSInteger i; 
-    
-    /* if key is longer than 64 bytes reset it to key=SHA1(key) */
-    if (key_len > 64) { 
-        sha1_context      tctx;
-        
-        sha1_starts(&tctx);
-        sha1_update(&tctx, key, key_len);
-        sha1_finish(&tctx, key);
-        
-        key_len = 20;
-    }
-    
-    /* 
-     * the HMAC_SHA1 transform looks like: 
-     * 
-     * SHA1(K XOR opad, SHA1(K XOR ipad, text))
-     *
-     * where K is an n byte key
-     * ipad is the byte 0x36 repeated 64 times
-     * opad is the byte 0x5c repeated 64 times 
-     * and text is the data being protected  */ 
-     
-     
-    /* start out by storing key in pads */
-    memset(k_ipad, 0, sizeof k_ipad); 
-    memset(k_opad, 0, sizeof k_opad); 
-    memcpy(k_ipad, key, key_len); 
-    memcpy(k_opad, key, key_len); 
-    
-    /* XOR key with ipad and opad values */ 
-    for (i = 0; i < 64; ++i) {
-        k_ipad[i] ^= 0x36; 
-        k_opad[i] ^= 0x5c;
-    } 
-    
-    /* perform inner SHA1*/
-    sha1_starts(&context); /* init context for 1st pass */
-    sha1_update(&context, k_ipad, 64); /* start with inner pad */
-    sha1_update(&context, text, text_len); /* then text of datagram */
-    sha1_finish(&context, digest); /* finish up 1st pass */
-    
-    /* perform outer SHA1 */ 
-    sha1_starts(&context); /* init context for 2nd pass */
-    sha1_update(&context, k_opad, 64); /* start with outer pad */
-    sha1_update(&context, digest, 20); /* then results of 1st hash */
-    sha1_finish(&context, digest); /* finish up 2nd pass */
+    // F-02: the hand-rolled HMAC (formerly over polarssl contexts) is exactly
+    // CCHmac. Output is identical for every input the original handled;
+    // CCHmac additionally handles keys longer than the 64-byte block
+    // per RFC 2104 instead of overrunning the pad buffers.
+    CCHmac(kCCHmacAlgSHA1, key, key_len, text, text_len, digest);
 }
 
 #pragma mark -

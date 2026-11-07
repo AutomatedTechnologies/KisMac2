@@ -31,7 +31,7 @@
 #import "../WaveDrivers/WaveDriverAirport.h"
 #import "../WaveDrivers/WaveDriver.h"
 
-#include "md5.h"
+#include <CommonCrypto/CommonDigest.h>	// F-02: polarssl removed
 #include <unistd.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <IOKit/IOKitLib.h>
@@ -52,7 +52,7 @@ void WirelessCryptMD5(char const *str, unsigned char *key)
 {
     NSInteger i, j;
     u_char md5_buf[64];
-    md5_context ctx;
+    unsigned char digest[CC_MD5_DIGEST_LENGTH];
     
     j = 0;
     for(i = 0; i < 64; ++i)
@@ -61,11 +61,10 @@ void WirelessCryptMD5(char const *str, unsigned char *key)
         md5_buf[i] = str[j++];
     }
     
-    md5_starts(&ctx);
-    md5_update(&ctx, md5_buf, 64);
-    md5_finish(&ctx, md5_buf);
+    // F-02: one-shot CommonCrypto MD5, identical digest to the polarssl sequence.
+    CC_MD5(md5_buf, 64, digest);
     
-    memcpy(key, md5_buf, 13);
+    memcpy(key, digest, 13);
 }
 
 @implementation WaveHelper

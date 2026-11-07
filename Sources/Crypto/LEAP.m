@@ -30,7 +30,7 @@
 
 #include "LEAP.h"
 #include "../3rd Party/DESSupport.h"
-#include "md4.h"
+#include <CommonCrypto/CommonDigest.h>	// F-02: polarssl removed
 
 //calulate the last two bytes
 NSInteger gethashlast2(const unsigned char *challenge, const unsigned char *response, unsigned char* endofhash)
@@ -72,7 +72,8 @@ void NtPasswordHash(char *secret, NSInteger secret_len, unsigned char *hash)
         unicodePassword[i * 2] = (unsigned char) secret[i];
 
     /* Unicode is 2 bytes per char */
-    md4(unicodePassword, secret_len * 2, hash);
+    // F-02: CC_MD4 is the CommonCrypto one-shot equivalent of polarssl md4().
+    CC_MD4(unicodePassword, (CC_LONG)(secret_len * 2), hash);
 }
 
 NSInteger testChallenge(const unsigned char* challenge, const unsigned char* response, unsigned char *zpwhash) 
