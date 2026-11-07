@@ -2,7 +2,7 @@
  
  File:			WaveNet.mm
  Program:		KisMAC
- Author:		Michael Ro§berg
+ Author:		Michael RoÂ§berg
                 mick@binaervarianz.de
  Changes:       Vitalii Parovishnyk(1012-2015)
  
@@ -1125,7 +1125,7 @@ NSInteger lengthSort(id string1, id string2, void *context)
 	 kCWSecurityUnknown              = NSIntegerMax,*/
 	CWSecurity sm = kCWSecurityNone;
 	
-	for (; sm <= kCWSecurityEnterprise; ++sm) {
+	for (; sm <= kCWSecurityEnterprise; sm = (CWSecurity)(sm + 1)) {
 		if ([info supportsSecurity:sm])
 			break;
 	}
