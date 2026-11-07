@@ -179,7 +179,17 @@ pcap_dumper_t * dumper;
     
 	if (!_device && !shouldPlayback)
     {
-        NSArray * args = @[@"0777", @"/dev/bpf0", @"/dev/bpf1", @"/dev/bpf2", @"/dev/bpf3"];
+        // F-13: least privilege + restore-after-use. 0777 made the capture devices
+        // world-readable/writable for the rest of the session (until reboot); the
+        // second chmod below re-applied 0777 *after* a successful open. Permissions
+        // are only consulted at open time, so: open at 0660 (root + device group,
+        // not every local user/process), then restore the stock 0600 immediately.
+        // The already-open pcap handle is unaffected by the restore.
+        // Caveat (F-12): BLAuthentication's executeCommand: reports success
+        // unconditionally, so the failure branch here cannot be trusted until the
+        // executor is replaced - see 05-REMEDIATION-TRANCHE-1.md for the design.
+        NSArray * args = @[@"0660", @"/dev/bpf0", @"/dev/bpf1", @"/dev/bpf2", @"/dev/bpf3"];
+        NSArray * restoreArgs = @[@"0600", @"/dev/bpf0", @"/dev/bpf1", @"/dev/bpf2", @"/dev/bpf3"];
 		if (![[BLAuthentication sharedInstance] executeCommand:@"/bin/chmod" withArgs: args]) return nil;
 		[NSThread sleep:0.5];
 	
@@ -187,7 +197,7 @@ pcap_dumper_t * dumper;
         
 		_device = pcap_open_live(deviceName, 3000, 1, 2, err);
         
-		[[BLAuthentication sharedInstance] executeCommand:@"/bin/chmod" withArgs:args];
+		[[BLAuthentication sharedInstance] executeCommand:@"/bin/chmod" withArgs:restoreArgs];
 
 		if (!_device)
         {
