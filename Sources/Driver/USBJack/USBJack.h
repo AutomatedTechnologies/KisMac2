@@ -55,6 +55,17 @@ struct __frameRing {
 
 
 
+// deviceTypes: hoisted to file scope (DAADV3 T3 item 16) — NS_ENUM inside the
+// class body is rejected by clang (typedef name conflict); enumerators unchanged.
+typedef NS_ENUM(NSUInteger, deviceTypes)
+{
+    intersil = 1,
+    zydas,
+    ralink,
+		rt73,
+    rtl8187
+};
+
 class USBJack {
 public:
     virtual BOOL    startCapture(UInt16 channel);
@@ -84,14 +95,6 @@ protected:
     
     BOOL    _matchingDone;
     
-    typedef NS_ENUM(NSUInteger, deviceTypes)
-    {
-        intersil = 1,
-        zydas,
-        ralink,
-		rt73,
-        rtl8187
-    };
 
     IOReturn    _sendFrame(UInt8* data, IOByteCount size);
     
