@@ -136,7 +136,6 @@
 		A529ADA61A20A4B400CD8E1E /* WayPointDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = A529AD941A20A4B400CD8E1E /* WayPointDialog.xib */; };
 		A529ADA71A20A4B400CD8E1E /* wepInjection.xib in Resources */ = {isa = PBXBuildFile; fileRef = A529AD961A20A4B400CD8E1E /* wepInjection.xib */; };
 		A5353972180B15B9008BB6A1 /* DESSupport.c in Sources */ = {isa = PBXBuildFile; fileRef = A5353970180B15B9008BB6A1 /* DESSupport.c */; };
-		A54B4CDD1B6F847B003279DD /* DownloadMap.xib in Resources */ = {isa = PBXBuildFile; fileRef = A54B4CDB1B6F847B003279DD /* DownloadMap.xib */; };
 		A57E644D1607BC9700BE1BCA /* AirCrackWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64391607BC9700BE1BCA /* AirCrackWrapper.m */; };
 		A57E644F1607BC9700BE1BCA /* LEAP.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E643B1607BC9700BE1BCA /* LEAP.m */; };
 		A57E64551607BC9700BE1BCA /* WaveNetLEAPCrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64411607BC9700BE1BCA /* WaveNetLEAPCrack.m */; };
@@ -145,12 +144,8 @@
 		A57E645B1607BC9700BE1BCA /* WaveNetWEPWordlist.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64471607BC9700BE1BCA /* WaveNetWEPWordlist.m */; };
 		A57E645D1607BC9700BE1BCA /* WaveNetWPACrack.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64491607BC9700BE1BCA /* WaveNetWPACrack.m */; };
 		A57E645F1607BC9700BE1BCA /* WPA.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E644B1607BC9700BE1BCA /* WPA.m */; };
-		A57E64631607BD0900BE1BCA /* CrashReportController.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64611607BD0900BE1BCA /* CrashReportController.m */; };
-		A57E646B1607BD3200BE1BCA /* DownloadMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64671607BD3200BE1BCA /* DownloadMapController.m */; };
-		A57E646F1607BD6700BE1BCA /* MapDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E646D1607BD6700BE1BCA /* MapDownload.m */; };
 		A57E64731607BD8C00BE1BCA /* WaveWeakContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = A57E64711607BD8C00BE1BCA /* WaveWeakContainer.m */; };
 		A581FC2C177B36AC00C05CE9 /* FCS.m in Sources */ = {isa = PBXBuildFile; fileRef = A581FC2B177B36A800C05CE9 /* FCS.m */; };
-		A585F77B1771DB7100045928 /* HTTPStream.m in Sources */ = {isa = PBXBuildFile; fileRef = A585F77A1771DB7100045928 /* HTTPStream.m */; };
 		A5A2F59619DD74C20046299A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F59519DD74C20046299A /* Images.xcassets */; };
 		A5A2F59A19DD9EB40046299A /* spin@2x.gif in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F59919DD9EB40046299A /* spin@2x.gif */; };
 		A5A2F5AB19DDA55B0046299A /* NetworkLEAP.tif in Resources */ = {isa = PBXBuildFile; fileRef = A5A2F5A519DDA55B0046299A /* NetworkLEAP.tif */; };
@@ -387,7 +382,6 @@
 		A537418E19DD4AAC00434C6E /* WaveNetTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaveNetTest.m; sourceTree = "<group>"; };
 		A537418F19DD4AAC00434C6E /* WavePacketTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WavePacketTest.m; sourceTree = "<group>"; };
 		A543F3F71EC81F0000F6F3E2 /* libcorecrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcorecrypto.tbd; path = usr/lib/system/libcorecrypto.tbd; sourceTree = SDKROOT; };
-		A54B4CDC1B6F847B003279DD /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DownloadMap.xib; sourceTree = "<group>"; };
 		A55AAF181B6FD30F00B2200B /* OUItoVendorDB.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = OUItoVendorDB.py; sourceTree = "<group>"; };
 		A57E64381607BC9700BE1BCA /* AirCrackWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirCrackWrapper.h; sourceTree = "<group>"; };
 		A57E64391607BC9700BE1BCA /* AirCrackWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AirCrackWrapper.m; sourceTree = "<group>"; };
@@ -405,19 +399,11 @@
 		A57E64491607BC9700BE1BCA /* WaveNetWPACrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaveNetWPACrack.m; sourceTree = "<group>"; };
 		A57E644A1607BC9700BE1BCA /* WPA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WPA.h; sourceTree = "<group>"; };
 		A57E644B1607BC9700BE1BCA /* WPA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPA.m; sourceTree = "<group>"; };
-		A57E64601607BD0900BE1BCA /* CrashReportController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashReportController.h; sourceTree = "<group>"; };
-		A57E64611607BD0900BE1BCA /* CrashReportController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashReportController.m; sourceTree = "<group>"; };
-		A57E64651607BD3200BE1BCA /* DownloadMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadMapController.h; sourceTree = "<group>"; };
-		A57E64671607BD3200BE1BCA /* DownloadMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadMapController.m; sourceTree = "<group>"; };
-		A57E646C1607BD6700BE1BCA /* MapDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDownload.h; sourceTree = "<group>"; };
-		A57E646D1607BD6700BE1BCA /* MapDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDownload.m; sourceTree = "<group>"; };
 		A57E64701607BD8B00BE1BCA /* WaveWeakContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaveWeakContainer.h; sourceTree = "<group>"; };
 		A57E64711607BD8C00BE1BCA /* WaveWeakContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaveWeakContainer.m; sourceTree = "<group>"; };
 		A581FC27177B2B6700C05CE9 /* Apple80211.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Apple80211.h; sourceTree = "<group>"; };
 		A581FC2A177B36A800C05CE9 /* FCS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FCS.h; sourceTree = "<group>"; };
 		A581FC2B177B36A800C05CE9 /* FCS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FCS.m; sourceTree = "<group>"; };
-		A585F7791771DB7100045928 /* HTTPStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPStream.h; sourceTree = "<group>"; };
-		A585F77A1771DB7100045928 /* HTTPStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPStream.m; sourceTree = "<group>"; };
 		A59E42D71796ADBF00B1139F /* updateHelpIndex.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = updateHelpIndex.command; sourceTree = SOURCE_ROOT; };
 		A5A2F59519DD74C20046299A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
 		A5A2F59919DD9EB40046299A /* spin@2x.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "spin@2x.gif"; sourceTree = "<group>"; };
@@ -611,10 +597,6 @@
 		003533F906A5DD8500AB4577 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				A585F7791771DB7100045928 /* HTTPStream.h */,
-				A585F77A1771DB7100045928 /* HTTPStream.m */,
-				A57E646C1607BD6700BE1BCA /* MapDownload.h */,
-				A57E646D1607BD6700BE1BCA /* MapDownload.m */,
 				003533FA06A5DD8500AB4577 /* GPSController.h */,
 				003533FB06A5DD8500AB4577 /* GPSController.m */,
 			);
@@ -679,10 +661,6 @@
 		0035341F06A5DD8500AB4577 /* WindowControllers */ = {
 			isa = PBXGroup;
 			children = (
-				A57E64651607BD3200BE1BCA /* DownloadMapController.h */,
-				A57E64671607BD3200BE1BCA /* DownloadMapController.m */,
-				A57E64601607BD0900BE1BCA /* CrashReportController.h */,
-				A57E64611607BD0900BE1BCA /* CrashReportController.m */,
 				6C41BAAE0AA0B52900E0B411 /* GPSInfoController.h */,
 				6C41BAAF0AA0B52900E0B411 /* GPSInfoController.m */,
 				002E7DF706A86C6F00C9D931 /* ImportController.h */,
@@ -712,7 +690,6 @@
 		00F57C1606A886350035AE2F /* XIB */ = {
 			isa = PBXGroup;
 			children = (
-				A54B4CDB1B6F847B003279DD /* DownloadMap.xib */,
 				A529AD781A20A4B400CD8E1E /* Crack.xib */,
 				A529AD7A1A20A4B400CD8E1E /* GPSDialog.xib */,
 				A529AD7C1A20A4B400CD8E1E /* Import.xib */,
@@ -1078,7 +1055,6 @@
 				691CF1B00E4CC47C0042B146 /* UsbVendorsIntersil.plist in Resources */,
 				691CF1B10E4CC47C0042B146 /* UsbVendorsRT73.plist in Resources */,
 				691CF1B20E4CC47C0042B146 /* UsbVendorsRT2570.plist in Resources */,
-				A54B4CDD1B6F847B003279DD /* DownloadMap.xib in Resources */,
 				691CF1B30E4CC47C0042B146 /* UsbVendorsRTL8187.plist in Resources */,
 				A529AD9F1A20A4B400CD8E1E /* PrefsDriver.xib in Resources */,
 				A529AD9E1A20A4B400CD8E1E /* PrefsAdvanced.xib in Resources */,
@@ -1223,12 +1199,8 @@
 				A57E645B1607BC9700BE1BCA /* WaveNetWEPWordlist.m in Sources */,
 				A57E645D1607BC9700BE1BCA /* WaveNetWPACrack.m in Sources */,
 				A57E645F1607BC9700BE1BCA /* WPA.m in Sources */,
-				A57E64631607BD0900BE1BCA /* CrashReportController.m in Sources */,
-				A57E646B1607BD3200BE1BCA /* DownloadMapController.m in Sources */,
-				A57E646F1607BD6700BE1BCA /* MapDownload.m in Sources */,
 				A57E64731607BD8C00BE1BCA /* WaveWeakContainer.m in Sources */,
 				A5353972180B15B9008BB6A1 /* DESSupport.c in Sources */,
-				A585F77B1771DB7100045928 /* HTTPStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1379,15 +1351,7 @@
 			name = wepInjection.xib;
 			sourceTree = "<group>";
 		};
-		A54B4CDB1B6F847B003279DD /* DownloadMap.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A54B4CDC1B6F847B003279DD /* en */,
-			);
-			name = DownloadMap.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
+		/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00A9158F0858D6410093943F /* Debug */ = {

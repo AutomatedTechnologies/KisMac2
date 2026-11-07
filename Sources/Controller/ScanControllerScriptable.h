@@ -49,7 +49,6 @@
 - (BOOL)importImageForMap:(NSString*)filename;
 - (BOOL)importPCAP:(NSString*)filename;
 - (BOOL)exportKML:(NSString*)filename;
-- (BOOL)downloadMapFrom:(NSString*)server forPoint:(waypoint)w resolution:(NSSize)size zoomLevel:(NSInteger)zoom;
 - (BOOL)save:(NSString*)filename;
 - (BOOL)saveAs:(NSString*)filename;
 

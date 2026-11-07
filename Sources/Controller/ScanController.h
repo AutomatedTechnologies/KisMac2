@@ -51,7 +51,6 @@ typedef NS_ENUM(NSInteger, __availableTabs)
 @class PrefsController;
 @class GrowlController;
 @class GPSInfoController;
-@class DownloadMapController;
 
 //This is the main class. it basically provides an interface between the base and the gui
 @interface ScanController : NSObject
@@ -149,7 +148,6 @@ typedef NS_ENUM(NSInteger, __availableTabs)
     IBOutlet NSDrawer           *_netHierarchDrawer;
 	GPSInfoController* _g;
 	NSWindow *borderlessWindow;
-    DownloadMapController* dmc;
 }
 
 - (IBAction)updateNetworkTable:(id)sender complete:(BOOL)complete;
@@ -167,7 +165,6 @@ typedef NS_ENUM(NSInteger, __availableTabs)
 
 - (IBAction)importKismetXML:(id)sender;
 - (IBAction)importNetstumbler:(id)sender;
-- (IBAction)importMapFromServer:(id)sender;
 
 - (IBAction)exportNS:(id)sender;
 - (IBAction)exportKMLFile:(id)sender;

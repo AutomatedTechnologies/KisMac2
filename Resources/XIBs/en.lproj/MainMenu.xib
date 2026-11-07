@@ -297,11 +297,6 @@
                                                 <action selector="importImageForMap:" target="1397" id="1488"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="  Server" id="1042">
-                                            <connections>
-                                                <action selector="importMapFromServer:" target="466" id="1043"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

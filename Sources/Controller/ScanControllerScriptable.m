@@ -31,7 +31,6 @@
 #import "WaveScanner.h"
 #import "WaveNetWEPCrack.h"
 #import "MapView.h"
-#import "MapDownload.h"
 #import "KisMACNotifications.h"
 #import "WaveStorageController.h"
 #import "Trace.h"
@@ -384,46 +383,7 @@
     return !_asyncFailure;
 }
 
-- (BOOL)downloadMapFrom:(NSString*)server forPoint:(waypoint)w resolution:(NSSize)size zoomLevel:(NSInteger)zoom
-{
-    NSImage *map;
-    MapDownload *md;
-    BOOL failure = YES;
-    [self showBusyWithText:NSLocalizedString(@"Importing from Server...", "Status for busy dialog")];
-    [self clearAreaMap];
-    
-    md = [MapDownload mapDownload];
-    NS_DURING
-    if ([md downloadMapFrom:server forPoint:w resolution:size zoomLevel:zoom]) {
-        map = [md map];
-        if (map)
-        {
-            [_mappingView setMap:map];
-            [_mappingView setWaypoint:selWaypoint1 toPoint:[md waypoint1Pixel] atCoordinate:[md waypoint1]];
-            [_mappingView setWaypoint:selWaypoint2 toPoint:[md waypoint2Pixel] atCoordinate:[md waypoint2]];
-            
-            failure = NO;
-        }
-    }
-    NS_HANDLER
-    NS_ENDHANDLER
-    
-    [self busyDone];
-    
-    if (failure)
-    {
-        NSBeginCriticalAlertSheet(
-                                  NSLocalizedString(@"Import failed", "Import failure dialog title"),
-                                  OK, NULL, NULL, _window, self, NULL, NULL, NULL,
-                                  NSLocalizedString(@"Import failure description", "LONG description. Maybe no internet?")
-                                  //"KisMAC was unable to complete the import. Are you sure that you have a valid internet connection?"
-                                  );
-    }
-    else {
-        [self showMap];
-    }
-    return !failure;
-}
+
 
 - (BOOL)save:(NSString*)filename
 {

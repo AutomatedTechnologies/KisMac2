@@ -32,7 +32,6 @@
 #import "WaveScanner.h"
 #import "KisMACNotifications.h"
 #import "GPSInfoController.h"
-#import "HTTPStream.h"
 #import "../Core/KismetXMLImporter.h"
 #import "../Crypto/WPA.h"
 #import "TrafficController.h"
@@ -43,7 +42,6 @@
 #import "WaveNet.h"
 #import "InfoController.h"
 #import "PrefsController.h"
-#import "DownloadMapController.h"
 #import "ImportController.h"
 #import "WaveHelper.h"
 #import "WaveContainer.h"
@@ -126,17 +124,7 @@
 	 }];
 }
 
-- (IBAction)importMapFromServer:(id)sender
-{
-    dmc = [[DownloadMapController alloc] initWithWindowNibName:@"DownloadMap"];
-    
-    [[dmc window] setFrameUsingName:@"aKisMAC_DownloadMap"];
-    [[dmc window] setFrameAutosaveName:@"aKisMAC_DownloadMap"];
-    
-    [dmc setCoordinates:[[WaveHelper gpsController] currentPoint]];
-    [dmc showWindow:self];
-    [[dmc window] makeKeyAndOrderFront:self];
-}
+
 
 - (IBAction)importNetstumbler:(id)sender
 {
@@ -910,7 +898,7 @@
 
 - (IBAction)openWebsiteURL:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/IGRSoft/KisMac2"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/AutomatedTechnologies/KisMac2"]];
 }
 
 - (IBAction)openDonateURL:(id)sender

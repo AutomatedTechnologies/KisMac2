@@ -34,7 +34,6 @@
 #import "GPSController.h"
 #import "WaveClient.h"
 #import "WaveNet.h"
-#import "../WindowControllers/CrashReportController.h"
 #import "../Controller/TrafficController.h"
 #import "WaveContainer.h"
 #import "../WaveDrivers/WaveDriver.h"
@@ -92,14 +91,6 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
                                        @"GPSTrace":               @2,
                                        @"GPSNoFix":               @0,
                                        @"GPSTripmate":            @NO,
-                                       @"DownloadMapScale":       @"3",
-                                       @"DownloadMapServer":      @"<Select a Server>",
-                                       @"DownloadMapWidth":       @1024,
-                                       @"DownloadMapHeight":      @768,
-                                       @"DownloadMapLatitude":    @0.0,
-                                       @"DownloadMapHLongitude":  @0.0,
-                                       @"DownloadMapNS":          @"N",
-                                       @"DownloadMapEW":          @"E",
                                        @"TrafficViewShowSSID":    @1,
                                        @"TrafficViewShowBSSID":   @0,
                                        @"FilterBSSIDList":        @[],
@@ -798,56 +789,9 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    NSString * logPath;
-    NSString * crashPath;
-    NSFileManager * mang;
-    NSUserDefaults * sets;
-    NSDirectoryEnumerator * enumerator;
-    NSMutableData * crashLogs = nil;
-    
     [self updatePrefs:nil];
-    sets = [NSUserDefaults standardUserDefaults];
-    
-    logPath = [@"~/Library/Logs/DiagnosticReports/" stringByExpandingTildeInPath];
-    mang = [NSFileManager defaultManager];
-    
-    if ([[sets objectForKey:@"SupressCrashReport"] intValue] != 1)
-    {
-        enumerator = [mang enumeratorAtPath: logPath];
-        
-        //find all the crash logs and turn them into one big data blob
-        for(NSString * file in enumerator)
-        {
-            if([file hasPrefix:@"KisMAC"])
-            {
-                //if we don't have any yet, allocate the data
-                if(nil == crashLogs)
-                {
-                    crashLogs = [[NSMutableData alloc] init];
-                }
-                crashPath = [NSString stringWithFormat:@"%@/%@", logPath, file];
-                DBNSLog(@"Found crash log at: %@", crashPath);
-                [crashLogs appendData: [mang contentsAtPath:crashPath]];
-            }
-        }
-        
-        if(crashLogs != nil)
-        {
-            //append the last kismac log
-            crashPath = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Logs/KisMAC.log.1"];
-            [crashLogs appendData: [mang contentsAtPath:crashPath]];
-            
-            CrashReportController* crc = [[CrashReportController alloc] initWithWindowNibName:@"CrashReporter"];
-            [[crc window] setFrameUsingName:@"aKisMAC_CRC"];
-            [[crc window] setFrameAutosaveName:@"aKisMAC_CRC"];
-            
-            [crc setReport:crashLogs];
-            [crc showWindow:self];
-            [[crc window] makeKeyAndOrderFront:self];
-            
-            DBNSLog(@"crash occured the last time kismac started");
-        }
-    }//crash logs enabled
+    // F-04: crash-report collection/POST removed (Academy Update Infrastructure
+    // Standard) — crash handling is OS-native; no off-machine reporting.
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
