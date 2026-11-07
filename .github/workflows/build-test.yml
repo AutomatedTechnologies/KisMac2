@@ -28,6 +28,22 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/Subprojects/GBStorage/GBStorage.h" "$SHIM/"
           ls -la "$SHIM" "$SHIM/BIGL" "$SHIM/BIGeneric"
 
+      - name: Apply CI source patches (submodule working tree)
+        run: |
+          # BIZoomView.m lives in the BIGeneric submodule (IGRSoft/BIGeneric);
+          # its contents cannot be committed through this repo, so the fix is
+          # applied to the checked-out working tree: NSView _frame ivar ->
+          # self.frame, 10 read sites (macOS 15.5 SDK no longer exposes the
+          # ivar; run #12 diagnostic). Guarded: the step fails unless exactly
+          # 10 sites exist before and 0 remain after.
+          F="Subprojects/BIGeneric/Classes/BIZoomView.m"
+          BEFORE=$(grep -c '_frame' "$F")
+          perl -pi -e 's/\b_frame\b/self.frame/g' "$F"
+          AFTER=$(grep -c 'self\.frame' "$F")
+          LEFT=$(grep -c '_frame' "$F" || true)
+          echo "BIZoomView.m CI patch: sites_before=$BEFORE self_frame_after=$AFTER leftover=$LEFT"
+          test "$BEFORE" = "10" && test "$AFTER" = "10" && test "$LEFT" = "0"
+
       - name: Build KisMac2 (Release, unsigned, 10.13 floor)
         run: |
           set -o pipefail
