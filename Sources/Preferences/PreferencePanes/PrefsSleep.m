@@ -7,6 +7,7 @@
 //
 
 #import "PrefsSleep.h"
+#import "PrefsController.h"
 #import "WaveHelper.h"
 
 @implementation PrefsSleep
