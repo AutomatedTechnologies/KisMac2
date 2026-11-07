@@ -32,7 +32,7 @@ jobs:
         run: |
           set -o pipefail
           SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
-          xcodebuild -project KisMac2.xcodeproj -scheme KisMac2 \
+          xcodebuild -workspace KisMac2.xcworkspace -scheme KisMac2 \
             -configuration Release \
             CODE_SIGNING_ALLOWED=NO \
             MACOSX_DEPLOYMENT_TARGET=10.13 \
