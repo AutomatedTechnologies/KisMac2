@@ -1141,7 +1141,7 @@ static NSString *WaveNetValidatedSSID(NSString *ssid)
 	 kCWSecurityUnknown              = NSIntegerMax,*/
 	CWSecurity sm = kCWSecurityNone;
 	
-	for (; sm <= kCWSecurityEnterprise; ++sm) {
+	for (; sm <= kCWSecurityEnterprise; sm = (CWSecurity)(sm + 1)) {
 		if ([info supportsSecurity:sm])
 			break;
 	}
