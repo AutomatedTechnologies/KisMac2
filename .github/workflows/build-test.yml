@@ -5,6 +5,13 @@ on:
     branches: [build-test]
   workflow_dispatch:
 
+# The publish step creates a GitHub Release with GITHUB_TOKEN. Run #13
+# proved build + package succeed but release creation failed with
+# "HTTP 403: Resource not accessible by integration" — the token's
+# default permissions on this repo do not include contents: write.
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-15
@@ -74,6 +81,13 @@ jobs:
           test -n "$APP"
           ditto -c -k --keepParent "$APP" KisMac-test.zip
           ls -la KisMac-test.zip
+
+      - name: Upload test build zip (survival copy)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kismac-test-zip
+          path: KisMac-test.zip
 
       - name: Publish prerelease with test build
         if: success()
