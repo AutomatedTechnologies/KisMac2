@@ -55,7 +55,7 @@ struct graphStruct
 @class CWNetwork;
 @class ImportController;
 
-@interface WaveNet : NSObject /*<UKTest>*/ {
+@interface WaveNet : NSObject <NSSecureCoding> /*<UKTest>*/ {
     NSInteger					_netID;					//network ID
     NSInteger					_maxSignal;				//biggest signal ever
     NSInteger					_curSignal;				//current signal

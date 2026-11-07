@@ -28,7 +28,7 @@
 
 @class WavePacket;
 
-@interface WaveClient : NSObject
+@interface WaveClient : NSObject <NSSecureCoding>
 {
     NSString *_ID, *_vendor;
     NSString * _IPAddress;

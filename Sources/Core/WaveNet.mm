@@ -140,6 +140,10 @@ NSInteger lengthSort(id string1, id string2, void *context)
     return self;
 }
 
++ (BOOL)supportsSecureCoding {
+    return YES;	// F-11
+}
+
 - (id)initWithCoder:(NSCoder *)coder {
     waypoint wp;
     NSInteger bssid[6];
@@ -150,7 +154,7 @@ NSInteger lengthSort(id string1, id string2, void *context)
         return nil;
     }
 
-    if ([coder decodeObjectForKey:@"aFirstDate"] == nil) {
+    if ([coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDate class], nil] forKey:@"aFirstDate"] == nil) {
         DBNSLog(@"Invalid net, dropping!");
         return nil;
     }
@@ -185,11 +189,11 @@ NSInteger lengthSort(id string1, id string2, void *context)
     wp._long = [coder decodeDoubleForKey:@"a_Long"];
     wp._elevation = [coder decodeDoubleForKey:@"a_Elev"];
     
-    aLat = [coder decodeObjectForKey:@"aLat"];
-    aLong = [coder decodeObjectForKey:@"aLong"];
-    aElev = [coder decodeObjectForKey:@"aElev"];
+    aLat = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aLat"];
+    aLong = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aLong"];
+    aElev = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aElev"];
     
-    _ID = [coder decodeObjectForKey:@"aID"];
+    _ID = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aID"];
     if (_ID != nil && sscanf([_ID UTF8String], "%2lX%2lX%2lX%2lX%2lX%2lX", &bssid[0], &bssid[1], &bssid[2], &bssid[3], &bssid[4], &bssid[5])!=6) {
         DBNSLog(@"Error could not decode ID %@!", _ID);
     }
@@ -197,8 +201,8 @@ NSInteger lengthSort(id string1, id string2, void *context)
     for (NSInteger x=0; x<6; ++x)
         _rawID[x] = bssid[x];
     
-    _SSID=WaveNetValidatedSSID([coder decodeObjectForKey:@"aSSID"]);
-    _BSSID=[coder decodeObjectForKey:@"aBSSID"];
+    _SSID=WaveNetValidatedSSID([coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aSSID"]);
+    _BSSID=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aBSSID"];
     if (![_BSSID isEqualToString:@"<no bssid>"]) {
         if (_BSSID!=nil && sscanf([_BSSID UTF8String], "%2lX:%2lX:%2lX:%2lX:%2lX:%2lX", &bssid[0], &bssid[1], &bssid[2], &bssid[3], &bssid[4], &bssid[5])!=6)
             DBNSLog(@"Error could not decode BSSID %@!", _BSSID);
@@ -209,27 +213,27 @@ NSInteger lengthSort(id string1, id string2, void *context)
             _rawBSSID[x] = bssid[0];
     }
     
-    _date = [coder decodeObjectForKey:@"aDate"];
-    aFirstDate=[coder decodeObjectForKey:@"aFirstDate"];
+    _date = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDate class], nil] forKey:@"aDate"];
+    aFirstDate=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDate class], nil] forKey:@"aFirstDate"];
     
-    data = [coder decodeObjectForKey:@"ivData0"];
+    data = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"ivData0"];
     if (data) _ivData[0] = [[WaveWeakContainer alloc] initWithData:data];
-    data = [coder decodeObjectForKey:@"ivData1"];
+    data = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"ivData1"];
     if (data) _ivData[1] = [[WaveWeakContainer alloc] initWithData:data];
-    data = [coder decodeObjectForKey:@"ivData2"];
+    data = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"ivData2"];
     if (data) _ivData[2] = [[WaveWeakContainer alloc] initWithData:data];
-    data = [coder decodeObjectForKey:@"ivData3"];
+    data = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"ivData3"];
     if (data) _ivData[3] = [[WaveWeakContainer alloc] initWithData:data];
     
     //_packetsLog=[[coder decodeObjectForKey:@"aPacketsLog"] retain];
     //_ARPLog=[[coder decodeObjectForKey:@"aARPLog"] retain]; cannot be used because it is now data
     //_ACKLog=[[coder decodeObjectForKey:@"aACKLog"] retain];
-    _password=[coder decodeObjectForKey:@"aPassword"];
-    aComment=[coder decodeObjectForKey:@"aComment"];
-    _coordinates=[coder decodeObjectForKey:@"_coordinates"];
+    _password=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aPassword"];
+    aComment=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aComment"];
+    _coordinates=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [NSArray class], [NSString class], [NSNumber class], [NSData class], [NSDate class], nil] forKey:@"_coordinates"];
     
-    aClients=[coder decodeObjectForKey:@"aClients"];
-    aClientKeys=[coder decodeObjectForKey:@"aClientKeys"];
+    aClients=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class], [WaveClient class], [NSArray class], [NSString class], [NSNumber class], [NSData class], [NSDate class], nil] forKey:@"aClients"];
+    aClientKeys=[coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [NSString class], nil] forKey:@"aClientKeys"];
     
     if (!_packetsLog) _packetsLog=[NSMutableArray arrayWithCapacity:20];
     if (!_ARPLog) _ARPLog=[NSMutableArray arrayWithCapacity:20];

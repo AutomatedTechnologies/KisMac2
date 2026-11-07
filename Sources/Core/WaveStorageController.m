@@ -34,6 +34,7 @@
 #import "ScanController.h"
 #import "WaveHelper.h"
 #import "WaveNet.h"
+#import "WaveClient.h"
 #import "WaveContainer.h"
 #import "Trace.h"
 #import "ImportController.h"
@@ -47,6 +48,31 @@ struct pointCoords {
 } __attribute__((packed));
 
 @implementation WaveStorageController
+
+// F-11: legacy .kisMAC files are attacker-supplied, and this loader is reached
+// automatically as the fallback when the BIGL decompressor rejects a file.
+// Decode with NSSecureCoding and an explicit class allowlist instead of the
+// unrestricted unarchiveObjectWithData:/unarchiveObjectWithFile:. Any class
+// outside the list fails the load closed. WaveNet/WaveClient declare
+// NSSecureCoding and decode their own fields with matching allowlists.
++ (id)unarchiveLegacyObjectWithData:(NSData*)rawData {
+	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:rawData error:nil];
+	if (!unarchiver) return nil;
+	unarchiver.requiresSecureCoding = YES;
+	NSSet *classes = [NSSet setWithObjects:
+		[NSDictionary class], [NSArray class], [NSSet class],
+		[NSString class], [NSNumber class], [NSData class], [NSDate class], [NSValue class],
+		[WaveNet class], [WaveClient class], nil];
+	id data = nil;
+	@try {
+		data = [unarchiver decodeObjectOfClasses:classes forKey:NSKeyedArchiveRootObjectKey];
+	} @catch (NSException *exception) {
+		DBNSLog(@"Refusing legacy file: %@", [exception reason]);
+		data = nil;
+	}
+	[unarchiver finishDecoding];
+	return data;
+}
 
 //loads a saved kismac meta file. pre 0.2a
 + (BOOL)loadLegacyFromFile:(NSString*)filename withContainer:(WaveContainer*)container andImportController:(ImportController*)im {
@@ -63,7 +89,7 @@ struct pointCoords {
 		return NO;
 	}
 	
-	data = [NSKeyedUnarchiver unarchiveObjectWithData:rawData];
+	data = [WaveStorageController unarchiveLegacyObjectWithData:rawData];
     if (![data isKindOfClass:[NSDictionary class]]) {
         DBNSLog(@"Could not load data, because root object is not a NSDictionary!");
         return NO;
@@ -167,7 +193,12 @@ struct pointCoords {
 	NSParameterAssert(container);
 	NSParameterAssert(im);
 
-	data = [NSKeyedUnarchiver unarchiveObjectWithFile:filename];
+	NSData *rawData = [NSData dataWithContentsOfFile:filename];
+	if (!rawData) {
+        DBNSLog(@"Could not load data!");
+		return NO;
+	}
+	data = [WaveStorageController unarchiveLegacyObjectWithData:rawData];
     if (![data isKindOfClass:[NSDictionary class]]) {
         DBNSLog(@"Could not load data, because root object is not a NSDictionary!");
         return NO;

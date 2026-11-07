@@ -39,6 +39,10 @@
 #pragma mark Coder stuff
 #pragma mark -
 
++ (BOOL)supportsSecureCoding {
+    return YES;	// F-11
+}
+
 - (id)initWithCoder:(NSCoder *)coder {
     self = [self init];
     if ( [coder allowsKeyedCoding] ) {
@@ -47,21 +51,21 @@
         _receivedBytes=[coder decodeDoubleForKey:@"aReceivedBytes"];
         _sentBytes=[coder decodeDoubleForKey:@"aSentBytes"];
         
-        _ID     = [coder decodeObjectForKey:@"aID"];
-        _date   = [coder decodeObjectForKey:@"aDate"];
-        _IPAddress = [coder decodeObjectForKey:@"aIPA"];
+        _ID     = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aID"];
+        _date   = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSDate class], nil] forKey:@"aDate"];
+        _IPAddress = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"aIPA"];
         
         //WPA stuff
-        _sNonce = [coder decodeObjectForKey:@"sNonce"];
-        _aNonce = [coder decodeObjectForKey:@"aNonce"];
-        _packet = [coder decodeObjectForKey:@"packet"];
-        _MIC    = [coder decodeObjectForKey:@"MIC"];
+        _sNonce = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"sNonce"];
+        _aNonce = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"aNonce"];
+        _packet = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"packet"];
+        _MIC    = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"MIC"];
         _wpaKeyCipher = [coder decodeIntForKey:@"wpaKeyCipher"];
         
         //LEAP stuff
-        _leapUsername   = [coder decodeObjectForKey:@"leapUsername"];
-        _leapChallenge  = [coder decodeObjectForKey:@"leapChallenge"];
-        _leapResponse   = [coder decodeObjectForKey:@"leapResponse"];
+        _leapUsername   = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSString class], nil] forKey:@"leapUsername"];
+        _leapChallenge  = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"leapChallenge"];
+        _leapResponse   = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSData class], nil] forKey:@"leapResponse"];
         
         _changed = YES;
      } else {
