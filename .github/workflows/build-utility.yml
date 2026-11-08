@@ -113,6 +113,13 @@ jobs:
           test "$A_REC" = "true"
           test "$A_AUTH" = "Detroit Automation Academy"
           test "$A_DATE" = "2026-11-08"
+          # IP protection T2 (J directive 2026-11-08 04:26): bundle the
+          # Academy license and notice in Resources, byte-identical to the
+          # governing texts. The files live at the repo root; every other
+          # Academy bundle carries them under these exact names.
+          cp LICENSE-ACADEMY.txt NOTICE.txt "$APP/Contents/Resources/"
+          test -f "$APP/Contents/Resources/LICENSE-ACADEMY.txt"
+          test -f "$APP/Contents/Resources/NOTICE.txt"
           ditto -c -k --keepParent "$APP" Workbench-test.zip
           ls -la Workbench-test.zip
 
