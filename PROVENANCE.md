@@ -7,7 +7,7 @@ This repository is a fork, maintained by the **Detroit Automation Academy** (Aut
 - **Project:** KisMac2 — the KisMac wireless stumbling and security tool for macOS (original KisMac by Michael Rossberg and contributors; the KisMac2 line maintained by IGRSoft).
 - **Upstream repository:** https://github.com/Agnidia/KisMac2
 - **License:** GNU General Public License, version 2.0 (GPL-2.0) — see the license text in this repository. The Academy's modifications are offered under the same license, with source, as the GPL requires.
-- **Fork point:** upstream `master` at commit `703fbc2c837bc1521f14e0b2a48f7a510aea3d8f` — this fork's `master` is byte-identical to upstream at that commit; Academy work happens on Academy branches, never by rewriting upstream history.
+- **Fork point:** upstream `master` at commit `703fbc2c837bc1521f14e0b2a48f7a510aea3d8f` — this fork's `master` was byte-identical to upstream at that commit; the only Academy commits on `master` are this provenance acknowledgment itself — all code work happens on Academy branches, and upstream history is never rewritten.
 - **Fork taken:** 2026-11-06.
 
 ## Academy maintenance
