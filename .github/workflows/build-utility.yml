@@ -98,6 +98,21 @@ jobs:
           test "$BID" = "com.detroitautomationacademy.workbench"
           test "$BNAME" = "Workbench"
           test "$BVER" = "staged-v1-${{ github.run_number }}"
+          # Academy audit entry gate (Distro files/08): the built plist must
+          # carry com.detroitautomationacademy.audit with all flags true —
+          # Distro's installer refuses anything else. Fail the run otherwise.
+          AUD="com.detroitautomationacademy.audit"
+          A_DIS=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Disassembled" "$PLIST")
+          A_SCAN=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Scanned" "$PLIST")
+          A_REC=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Recompiled" "$PLIST")
+          A_AUTH=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Authority" "$PLIST")
+          A_DATE=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Date" "$PLIST")
+          echo "Audit entry: Disassembled=$A_DIS Scanned=$A_SCAN Recompiled=$A_REC Authority=$A_AUTH Date=$A_DATE"
+          test "$A_DIS" = "true"
+          test "$A_SCAN" = "true"
+          test "$A_REC" = "true"
+          test "$A_AUTH" = "Detroit Automation Academy"
+          test "$A_DATE" = "2026-11-08"
           ditto -c -k --keepParent "$APP" Workbench-test.zip
           ls -la Workbench-test.zip
 
