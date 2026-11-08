@@ -57,7 +57,7 @@ jobs:
           echo "BIZoomView.m CI patch: sites_before=$BEFORE self_frame_after=$AFTER leftover=$LEFT"
           test "$BEFORE" = "10" && test "$AFTER" = "10" && test "$LEFT" = "0"
 
-      - name: Build KisMac2 with Network Utility shell (Release, unsigned, 10.13 floor)
+      - name: Build Workbench with unified shell (Release, unsigned, 10.13 floor)
         run: |
           set -o pipefail
           SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
@@ -79,28 +79,41 @@ jobs:
       - name: Package app as zip
         if: success()
         run: |
-          APP=$(find ~/Library/Developer/Xcode/DerivedData -name 'KisMac2.app' -o -name 'KisMAC.app' | grep -v '\.dSYM' | head -1)
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -name 'Workbench.app' | grep -v '\.dSYM' | head -1)
           if [ -z "$APP" ]; then
-            APP=$(find . -name '*.app' -path '*Release*' | head -1)
+            APP=$(find . -name 'Workbench.app' -path '*Release*' | head -1)
           fi
           echo "Built app: $APP"
           test -n "$APP"
-          ditto -c -k --keepParent "$APP" KisMac-test.zip
-          ls -la KisMac-test.zip
+          # Bundle-collision correction (2026-11-08): the unified build ships
+          # with its OWN bundle identity, distinct from KisMac. Stamp the
+          # staged tag into CFBundleVersion and verify the identity in the
+          # built bundle before packaging — fail the run if it is not so.
+          PLIST="$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion staged-v1-${{ github.run_number }}" "$PLIST"
+          BID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$PLIST")
+          BNAME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$PLIST")
+          BVER=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST")
+          echo "Bundle identity: name=$BNAME id=$BID version=$BVER"
+          test "$BID" = "com.detroitautomationacademy.workbench"
+          test "$BNAME" = "Workbench"
+          test "$BVER" = "staged-v1-${{ github.run_number }}"
+          ditto -c -k --keepParent "$APP" Workbench-test.zip
+          ls -la Workbench-test.zip
 
       - name: Upload staged build zip (survival copy)
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: network-utility-zip
-          path: KisMac-test.zip
+          name: workbench-zip
+          path: Workbench-test.zip
 
       - name: Publish prerelease with staged build
         if: success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create staged-v1-${{ github.run_number }} KisMac-test.zip \
+          gh release create staged-v1-${{ github.run_number }} Workbench-test.zip \
             --prerelease \
-            --title "Network Utility V1 staged build ${{ github.run_number }}" \
-            --notes "STAGED INTERNAL BUILD — NOT A RELEASE. Network Utility (Switchboard V1) shell on the remediated KisMac tree: Discover (hosted scanner) + Manage READ for AirPort base stations + Diagnose (Ping, Netstat, Traceroute, Speed Test) + Journal. CI-built on macos-15; NOT yet verified on the High Sierra rig. Detroit Automation Academy."
+            --title "Workbench staged build ${{ github.run_number }} (Switchboard line)" \
+            --notes "STAGED INTERNAL BUILD — NOT A RELEASE. Workbench: the unified shell on the remediated KisMac tree: Discover (hosted scanner) + Manage READ for AirPort base stations + Diagnose (Ping, Netstat, Traceroute, Speed Test) + Journal. Ships as Workbench.app, bundle identifier com.detroitautomationacademy.workbench — its own bundle identity, distinct from KisMac (bundle-collision correction, 2026-11-08). CI-built on macos-15; NOT yet verified on the High Sierra rig. Detroit Automation Academy."

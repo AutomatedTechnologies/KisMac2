@@ -101,7 +101,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
                                                              NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable
                                                      backing:NSBackingStoreBuffered
                                                        defer:NO];
-    window.title = @"Network Utility";
+    window.title = @"Workbench";
     window.minSize = NSMakeSize(880, 560);
     window.delegate = self;
     [window center];

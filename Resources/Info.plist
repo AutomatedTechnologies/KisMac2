@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>KisMac 2</string>
+	<string>Workbench</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -54,7 +54,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>KisMAC</string>
+	<string>Workbench</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
