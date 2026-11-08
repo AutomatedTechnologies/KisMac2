@@ -1,3 +1,9 @@
+# Academy fork — maintained by the Detroit Automation Academy
+
+This is the Detroit Automation Academy's maintained fork of **KisMac2** (upstream: [Agnidia/KisMac2](https://github.com/Agnidia/KisMac2), GPL-2.0; fork point: upstream `master` @ `703fbc2c837b`, 2026-11-06). Full provenance: [PROVENANCE.md](PROVENANCE.md). The upstream README follows, unmodified.
+
+* * *
+
 # PLEASE NOTE, THIS PROJECT IS NO LONGER BEING MAINTAINED
 
 * * *
