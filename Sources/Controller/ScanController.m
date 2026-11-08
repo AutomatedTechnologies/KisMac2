@@ -152,7 +152,7 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
     NSUserDefaults *sets;
     
     [WaveHelper setScanController:self];
-    [_headerField setStringValue: [NSString stringWithFormat:@"KisMac v%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]];
+    [_headerField setStringValue: @"Workbench"];
     
     [ScanHierarch setContainer:_container];
     [WaveHelper setMainWindow:_window];
