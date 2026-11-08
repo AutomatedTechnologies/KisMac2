@@ -22,6 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 // current target (spec §5.2). The target is nil when nothing is selected
 // or the station has no resolved address.
 @property (nonatomic, copy, nullable) void (^onSelectTarget)(NUTarget * _Nullable target);
+// Supplies the current Discover survey to the Optimizations audit
+// (Switchboard files/08 §2/§4), as plain records in the shape
+// NUOptimizationEngine consumes: @{@"ssid": NSString, @"channel": NSNumber,
+// @"signal": NSNumber}. Set by the shell, which hosts the scanner. May
+// return nil when no survey is available — the engine then stays silent
+// on its scan-dependent checks, by its own honesty rules; it never
+// evaluates against a stored or assumed picture of the neighborhood.
+@property (nonatomic, copy, nullable) NSArray<NSDictionary *> * _Nullable (^scanNetworksProvider)(void);
 @end
 
 NS_ASSUME_NONNULL_END

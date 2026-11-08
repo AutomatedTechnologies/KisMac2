@@ -19,6 +19,21 @@
 
 #import <CoreWLAN/CoreWLAN.h>
 
+// Read-only snapshot shape of the hosted Discover engine, declared
+// informally so the shell needs no headers from the frozen scanner:
+// WaveContainer's network list, and on each WaveNet the three facts the
+// Optimizations audit consumes. Used only through respondsToSelector
+// guards in -nuCurrentScanNetworks.
+@protocol NUDiscoverNetSnapshot <NSObject>
+- (NSString *)SSID;
+- (NSInteger)channel;
+- (NSInteger)curSignal;
+@end
+
+@protocol NUDiscoverContainerSnapshot <NSObject>
+- (NSMutableArray *)allNets;
+@end
+
 typedef NS_ENUM(NSInteger, NUSection) {
     NUSectionNetworks = 0,
     NUSectionBaseStations,
@@ -307,6 +322,46 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
     [NSApp sendAction:NSSelectorFromString(orig[@"action"]) to:orig[@"target"] from:sender];
 }
 
+#pragma mark - Optimizations survey provider
+
+// The Optimizations audit (Switchboard files/08 §2) evaluates channel
+// congestion against the live Discover survey — the networks the hosted
+// scanner has actually observed, never a stored or assumed picture.
+// Discover is frozen and exposes no container accessor, and the shell
+// already reaches the scanner dynamically (it finds the scan window by
+// title and hosts its content view), so the snapshot is taken through
+// the same dynamic, read-only path: WaveHelper's registered scan
+// controller, its container, and each observed network's SSID, channel
+// and current signal — every step guarded. Any missing link returns
+// nil, and the audit engine then stays silent on its scan-dependent
+// checks by its own honesty rules. Nothing here starts, stops, or
+// reconfigures the scanner, and nothing contacts a base station.
+- (NSArray<NSDictionary *> *)nuCurrentScanNetworks
+{
+    Class helper = NSClassFromString(@"WaveHelper");
+    if (helper == Nil || ![helper respondsToSelector:@selector(scanController)]) return nil;
+    id scanController = [helper performSelector:@selector(scanController)];
+    id container = nil;
+    @try {
+        container = [scanController valueForKey:@"container"];
+    } @catch (NSException *exception) {
+        return nil;
+    }
+    if (container == nil || ![container respondsToSelector:@selector(allNets)]) return nil;
+    NSArray *nets = [(id<NUDiscoverContainerSnapshot>)container allNets];
+    NSMutableArray<NSDictionary *> *records = [NSMutableArray array];
+    for (id net in nets ?: @[]) {
+        if (![net respondsToSelector:@selector(SSID)] ||
+            ![net respondsToSelector:@selector(channel)] ||
+            ![net respondsToSelector:@selector(curSignal)]) continue;
+        id<NUDiscoverNetSnapshot> n = (id<NUDiscoverNetSnapshot>)net;
+        [records addObject:@{@"ssid": [n SSID] ?: @"",
+                             @"channel": @([n channel]),
+                             @"signal": @([n curSignal])}];
+    }
+    return [records copy];
+}
+
 #pragma mark - Sections
 
 - (NSView *)networksContainer
@@ -335,6 +390,9 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
                 self.manageVC = [[NUManageViewController alloc] init];
                 __weak typeof(self) weakSelf = self;
                 self.manageVC.onSelectTarget = ^(NUTarget *target) { weakSelf.currentTarget = target; };
+                self.manageVC.scanNetworksProvider = ^NSArray<NSDictionary *> *{
+                    return [weakSelf nuCurrentScanNetworks];
+                };
             }
             view = self.manageVC.view;
             break;

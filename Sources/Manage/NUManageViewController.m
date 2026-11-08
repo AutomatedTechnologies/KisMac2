@@ -6,6 +6,7 @@
 #import "NUManageViewController.h"
 #import "NUAirPort.h"
 #import "NUJournal.h"
+#import "NUOptimizationEngine.h"
 
 @interface NUManageViewController () <NSTableViewDataSource, NSTableViewDelegate>
 @property (nonatomic, strong) NUAirPortBrowser *browser;
@@ -13,10 +14,19 @@
 @property (nonatomic, strong) NSTableView *configTable;
 @property (nonatomic, strong) NSTextField *statusLabel;
 @property (nonatomic, strong) NSButton *readButton;
+@property (nonatomic, strong) NSButton *auditButton;
 @property (nonatomic, copy) NSArray<NSDictionary *> *sections; // flattened below
 @property (nonatomic, copy) NSArray<NSDictionary *> *flatRows; // @{section,item,value}
 @property (nonatomic, strong, nullable) NUAirPortStation *selectedStation;
 @property (nonatomic) BOOL reading;
+// The last completed read, kept so the Optimizations audit can re-run
+// on demand ("Run audit", files/08 §4) against a fresh survey without
+// opening a new station session. Displayable properties only — the
+// client layer has already excluded every password-typed value, so no
+// credential can reach the audit engine or the journal through here.
+@property (nonatomic, copy, nullable) NSArray<NSDictionary *> *lastSections;
+@property (nonatomic, copy, nullable) NSDictionary *lastProperties;
+@property (nonatomic, copy, nullable) NSString *lastTargetDescription;
 @end
 
 @implementation NUManageViewController
@@ -94,11 +104,24 @@
     [root addSubview:configScroll];
 
     self.statusLabel = [NSTextField wrappingLabelWithString:@"Looking for base stations on the local network (Bonjour)…"];
-    self.statusLabel.frame = NSMakeRect(248, 492, 496, 16);
+    self.statusLabel.frame = NSMakeRect(248, 492, 400, 16);
     self.statusLabel.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
     self.statusLabel.font = [NSFont systemFontOfSize:12];
     self.statusLabel.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1];
     [root addSubview:self.statusLabel];
+
+    // Optimizations audit (files/08 §4): re-runs the read-only audit
+    // against the last completed read and the current survey. Enabled
+    // only after a read — before one, the panel's empty state is the
+    // status line's prompt to select a station and Read. The audit
+    // has no apply control, here or anywhere (files/08 §1/§4).
+    self.auditButton = [NSButton buttonWithTitle:@"Run audit" target:self action:@selector(auditPressed:)];
+    self.auditButton.frame = NSMakeRect(656, 488, 88, 24);
+    self.auditButton.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
+    self.auditButton.bezelStyle = NSBezelStyleRounded;
+    self.auditButton.enabled = NO;
+    self.auditButton.toolTip = @"Run the Optimizations audit on the last configuration read, using the current network survey.";
+    [root addSubview:self.auditButton];
 
     self.view = root;
 
@@ -256,37 +279,95 @@
             self_.statusLabel.stringValue = error;
             return;
         }
-        NSMutableArray<NSDictionary *> *flat = [NSMutableArray array];
-        NSUInteger propertyCount = 0;
-        for (NSDictionary *section in sections) {
-            [flat addObject:@{@"header": @YES, @"section": section[@"title"]}];
-            for (NSDictionary *row in section[@"rows"]) {
-                [flat addObject:@{@"header": @NO, @"item": row[@"item"], @"value": row[@"value"]}];
-            }
-        }
-        // Raw table as the final section (password values already excluded).
-        [flat addObject:@{@"header": @YES, @"section": @"All Properties"}];
-        for (NSString *key in [rawProperties.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
-            id v = rawProperties[key];
-            NSString *value = [v isKindOfClass:[NSDictionary class]]
-                ? [NSString stringWithFormat:@"(%lu entries)", (unsigned long)[(NSDictionary *)v count]]
-                : (NSString *)v;
-            [flat addObject:@{@"header": @NO, @"item": key, @"value": value}];
-            propertyCount++;
-        }
-        self_.sections = sections;
-        self_.flatRows = [flat copy];
-        [self_.configTable reloadData];
-        self_.statusLabel.stringValue = [NSString stringWithFormat:@"Read %@ — %lu properties (passwords are never shown).",
-                                         station.displayName, (unsigned long)propertyCount];
         NSString *targetDesc = station.ipAddress.length
             ? [[NUTarget targetWithBaseStationName:station.displayName ipLiteral:station.ipAddress modelHint:station.modelHint error:NULL] validatedDescription]
             : station.displayName;
+        self_.lastSections = sections;
+        self_.lastProperties = rawProperties;
+        self_.lastTargetDescription = targetDesc;
+        self_.sections = sections;
+        // Rebuilds the table and runs the Optimizations audit on this
+        // fresh read (files/08 §4: the audit also refreshes when a new
+        // read completes while the section is open).
+        [self_ rebuildFlatRows];
+        [self_.configTable reloadData];
+        self_.auditButton.enabled = YES;
+        NSUInteger propertyCount = rawProperties.count;
+        self_.statusLabel.stringValue = [NSString stringWithFormat:@"Read %@ — %lu properties (passwords are never shown).",
+                                         station.displayName, (unsigned long)propertyCount];
         [[NUJournal sharedJournal] addEntryWithKind:NUJournalEntryKindManageRead
                                               panel:@"Base Stations"
                                   targetDescription:targetDesc
                                              detail:[NSString stringWithFormat:@"configuration read — %lu properties", (unsigned long)propertyCount]];
     }];
+}
+
+#pragma mark - Optimizations audit (files/08)
+
+- (void)auditPressed:(id)sender
+{
+    if (self.lastProperties == nil) return;
+    [self rebuildFlatRows];
+    [self.configTable reloadData];
+}
+
+// Rebuilds flatRows from the last read: the client's sections, then the
+// Optimizations section, then the raw property table. Every rebuild
+// runs the audit once and records that run to the Journal (files/08 §2:
+// one entry per run, in the Diagnose record family — hence the
+// DiagnoseRun kind below — carrying the findings summary only: titles,
+// current and recommended values; never credentials, never the raw
+// payload). The audit is read-only by construction: the engine performs
+// no I/O and this panel offers no way to apply a finding (files/08 §1).
+- (void)rebuildFlatRows
+{
+    NSMutableArray<NSDictionary *> *flat = [NSMutableArray array];
+    for (NSDictionary *section in self.lastSections ?: @[]) {
+        [flat addObject:@{@"header": @YES, @"section": section[@"title"]}];
+        for (NSDictionary *row in section[@"rows"]) {
+            [flat addObject:@{@"header": @NO, @"item": row[@"item"], @"value": row[@"value"]}];
+        }
+    }
+    if (self.lastProperties != nil) {
+        NSArray<NSDictionary *> *scan = self.scanNetworksProvider ? self.scanNetworksProvider() : nil;
+        NSArray<NUOptimizationFinding *> *findings =
+            [NUOptimizationEngine findingsFromProperties:self.lastProperties
+                                            scanNetworks:scan
+                                                 clients:nil];
+        [flat addObject:@{@"header": @YES, @"section": @"Optimizations"}];
+        if (findings.count > 0) {
+            for (NUOptimizationFinding *f in findings) {
+                NSString *severityWord = f.severity == NUOptimizationSeverityRecommendation ? @"Recommendation"
+                                       : f.severity == NUOptimizationSeverityAdvisory       ? @"Advisory"
+                                                                                            : @"For information";
+                NSString *value = [NSString stringWithFormat:@"%@ · %@ → %@ — %@",
+                                   severityWord, f.currentValue, f.recommendedValue, f.rationale];
+                [flat addObject:@{@"header": @NO, @"item": f.title, @"value": value}];
+            }
+        } else if (scan.count > 0) {
+            [flat addObject:@{@"header": @NO, @"item": @"No findings",
+                              @"value": @"Every setting this audit could check matches its recommendation."}];
+        } else {
+            // Honest empty state (files/08 §4): without a survey the
+            // channel checks did not run, so this is not the all-clear.
+            [flat addObject:@{@"header": @NO, @"item": @"No findings",
+                              @"value": @"Every setting this audit could check from the configuration matches its recommendation. No current survey was available, so the channel checks did not run."}];
+        }
+        [[NUJournal sharedJournal] addEntryWithKind:NUJournalEntryKindDiagnoseRun
+                                              panel:@"Optimizations"
+                                  targetDescription:self.lastTargetDescription ?: @"base station"
+                                             detail:[NUOptimizationEngine journalSummaryFromFindings:findings]];
+    }
+    // Raw table as the final section (password values already excluded).
+    [flat addObject:@{@"header": @YES, @"section": @"All Properties"}];
+    for (NSString *key in [self.lastProperties.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        id v = self.lastProperties[key];
+        NSString *value = [v isKindOfClass:[NSDictionary class]]
+            ? [NSString stringWithFormat:@"(%lu entries)", (unsigned long)[(NSDictionary *)v count]]
+            : (NSString *)v;
+        [flat addObject:@{@"header": @NO, @"item": key, @"value": value}];
+    }
+    self.flatRows = [flat copy];
 }
 
 @end
