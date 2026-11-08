@@ -10,6 +10,7 @@
 
 #import "NUAirPort.h"
 #import "NUTarget.h"
+#import "NUDriveInventory.h"
 
 #import <sys/socket.h>
 #import <fcntl.h>
@@ -201,15 +202,26 @@ static NSString *NUSharingName(NSNumber *code)
     if (dns.count) NUAddRow(rows, @"DNS servers", [dns componentsJoinedByString:@", "]);
     if (rows.count) [sections addObject:@{@"title": @"Network", @"rows": [rows copy]}];
 
-    // Disks (Time Capsule) — read-only status.
+    // Disks — attached-drive inventory (read-only; design: Switchboard
+    // files/06-DRIVE-MANAGEMENT-DESIGN.md). The structured inventory
+    // renders capacity/free/format/status when the station reports them;
+    // any payload shape it does not understand falls back to the opaque
+    // rendering below, so no reported drive ever disappears.
     rows = [NSMutableArray array];
-    id disks = properties[@"MaSt"];
-    if ([disks isKindOfClass:[NSDictionary class]]) {
-        for (NSString *name in [[(NSDictionary *)disks allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-            NUAddRow(rows, name, NUStringifyValue(disks[name]));
+    NSArray<NUDriveInfo *> *drives = [NUDriveInventory drivesFromProperties:properties];
+    if (drives.count) {
+        for (NSDictionary *row in [NUDriveInventory rowsFromDrives:drives]) {
+            NUAddRow(rows, row[@"item"], row[@"value"]);
         }
-    } else if (disks != nil) {
-        NUAddRow(rows, @"Disks", NUStringifyValue(disks));
+    } else {
+        id disks = properties[@"MaSt"];
+        if ([disks isKindOfClass:[NSDictionary class]]) {
+            for (NSString *name in [[(NSDictionary *)disks allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+                NUAddRow(rows, name, NUStringifyValue(disks[name]));
+            }
+        } else if (disks != nil) {
+            NUAddRow(rows, @"Disks", NUStringifyValue(disks));
+        }
     }
     if ([properties[@"bsFS"] isKindOfClass:[NSNumber class]]) {
         NUAddRow(rows, @"File sharing", [properties[@"bsFS"] boolValue] ? @"On" : @"Off");

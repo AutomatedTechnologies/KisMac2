@@ -15,10 +15,15 @@
 
 - (void)loadView
 {
+    // Layout note (owner UAT 2026-11-07 20:59): frames are the design
+    // size; the shell stretches this view, so subviews carry autoresizing
+    // masks — note pinned top, Export pinned top-right, table flexible.
+    // Without masks the panel stayed a fixed block anchored bottom-left.
     NSView *root = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 760, 520)];
 
     NSTextField *note = [NSTextField wrappingLabelWithString:@"Local record only — stored on this Mac, never transmitted. Export writes a text file you choose."];
     note.frame = NSMakeRect(16, 488, 560, 16);
+    note.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
     note.font = [NSFont systemFontOfSize:12];
     note.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1]; // SDS muted
     [root addSubview:note];
@@ -26,11 +31,13 @@
     NSButton *exportButton = [NSButton buttonWithTitle:@"Export…" target:self action:@selector(exportPressed:)];
     exportButton.frame = NSMakeRect(644, 482, 100, 28);
     exportButton.bezelStyle = NSBezelStyleRounded;
+    exportButton.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
     [root addSubview:exportButton];
 
     NSScrollView *scroll = [[NSScrollView alloc] initWithFrame:NSMakeRect(16, 16, 728, 458)];
     scroll.hasVerticalScroller = YES;
     scroll.borderType = NSBezelBorder;
+    scroll.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     self.table = [[NSTableView alloc] initWithFrame:scroll.contentView.bounds];
     NSArray *cols = @[
         @[@"when", @"When", @130],
@@ -43,6 +50,7 @@
         NSTableColumn *col = [[NSTableColumn alloc] initWithIdentifier:c[0]];
         col.title = c[1];
         col.width = [c[2] doubleValue];
+        if ([c[0] isEqualToString:@"detail"]) col.resizingMask = NSTableColumnAutoresizingMask;
         [self.table addTableColumn:col];
     }
     self.table.dataSource = self;

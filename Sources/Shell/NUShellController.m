@@ -39,6 +39,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
 @property (nonatomic, strong, nullable) NSWindow *hostedWindow;   // the KisMac scan window
 @property (nonatomic, strong, nullable) NSView *hostedContent;     // its original content view
 @property (nonatomic, strong, nullable) NSToolbar *hostedToolbar;  // its original toolbar
+@property (nonatomic, strong) NSMutableDictionary *wrappedToolbarItems; // itemIdentifier -> @{target, action} it had before wrapping
 @property (nonatomic, strong) NSView *networksContainer;
 @property (nonatomic, strong) NUManageViewController *manageVC;
 @property (nonatomic, strong) NUDiagnoseViewController *diagnoseVC;
@@ -132,8 +133,14 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
     [root addSubview:self.contentContainer];
 
     // Status bar — always visible (spec §5.1): hairline top, panel backing.
+    // Pinned to the window's BOTTOM edge: the flexible margin must be the
+    // TOP one (NSViewMaxYMargin). NSViewMinYMargin here made the bottom
+    // margin flexible instead, so on any window taller than the initial
+    // frame the bar stayed at a fixed distance from the top and floated
+    // up into the content area, which then slid underneath it (owner UAT
+    // 2026-11-07 20:59: status text half-covered by the section panel).
     NSView *statusBar = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1080, 28)];
-    statusBar.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
+    statusBar.autoresizingMask = NSViewWidthSizable | NSViewMaxYMargin;
     statusBar.wantsLayer = YES;
     statusBar.layer.backgroundColor = [NSColor colorWithCalibratedWhite:0.957 alpha:1].CGColor;
     [root addSubview:statusBar];
@@ -151,6 +158,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
 
     self.journalLabel = [NSTextField labelWithString:@"Journal: no entries yet"];
     self.journalLabel.frame = NSMakeRect(590, 6, 330, 16);
+    self.journalLabel.autoresizingMask = NSViewWidthSizable;
     self.journalLabel.font = [NSFont systemFontOfSize:12];
     self.journalLabel.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1]; // SDS muted
     self.journalLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -158,6 +166,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
 
     self.classroomCheckbox = [NSButton checkboxWithTitle:@"Classroom mode" target:self action:@selector(classroomToggled:)];
     self.classroomCheckbox.frame = NSMakeRect(936, 4, 140, 20);
+    self.classroomCheckbox.autoresizingMask = NSViewMinXMargin; // stays pinned to the bar's right edge
     self.classroomCheckbox.font = [NSFont systemFontOfSize:12];
     self.classroomCheckbox.state = [[NSUserDefaults standardUserDefaults] boolForKey:kClassroomDefaultsKey]
         ? NSControlStateValueOn : NSControlStateValueOff;
@@ -215,6 +224,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
     if (self.hostedToolbar != nil) {
         scanWindow.toolbar = nil;
         self.window.toolbar = self.hostedToolbar;
+        [self wrapViewSwitchToolbarItems];
     }
     [self.hostedContent removeFromSuperview];
     self.hostedContent.frame = self.networksContainer.bounds;
@@ -230,6 +240,7 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
     [self.hostedContent removeFromSuperview];
     self.hostedWindow.contentView = self.hostedContent;
     if (self.hostedToolbar != nil) {
+        [self unwrapViewSwitchToolbarItems];
         self.window.toolbar = nil;
         self.hostedWindow.toolbar = self.hostedToolbar;
     }
@@ -242,6 +253,58 @@ static NSString * const kClassroomDefaultsKey = @"NUClassroomMode";
 - (void)windowWillClose:(NSNotification *)notification
 {
     if (notification.object == self.window) [self restoreHosting];
+}
+
+#pragma mark - Toolbar view-switch routing
+
+// The hosted toolbar's view-switch items (Networks / Graph / Details /
+// Map) act on the scanner's canvas, which lives inside the Networks
+// section. While another section is showing, a click switched a view the
+// user could not see — the items read as dead (owner UAT 2026-11-07
+// 20:59: "several non-functioning tabs including graph"). While the
+// toolbar is hosted here, those four items route through the shell: the
+// Networks section comes forward first, then the item's original action
+// runs unchanged. Original target/action are restored before the toolbar
+// is handed back to the scan window.
+- (BOOL)isViewSwitchAction:(SEL)action
+{
+    return action == @selector(showNetworks:) || action == @selector(showTrafficView:) ||
+           action == @selector(showDetails:)  || action == @selector(showMap:);
+}
+
+- (void)wrapViewSwitchToolbarItems
+{
+    if (self.wrappedToolbarItems == nil) self.wrappedToolbarItems = [NSMutableDictionary dictionary];
+    for (NSToolbarItem *item in self.hostedToolbar.items) {
+        if (item.target == nil || ![self isViewSwitchAction:item.action]) continue;
+        if (self.wrappedToolbarItems[item.itemIdentifier] != nil) continue;
+        self.wrappedToolbarItems[item.itemIdentifier] = @{
+            @"target": item.target,
+            @"action": NSStringFromSelector(item.action),
+        };
+        item.target = self;
+        item.action = @selector(nuToolbarViewSwitch:);
+    }
+}
+
+- (void)unwrapViewSwitchToolbarItems
+{
+    for (NSToolbarItem *item in self.hostedToolbar.items) {
+        NSDictionary *orig = self.wrappedToolbarItems[item.itemIdentifier];
+        if (orig == nil) continue;
+        item.target = orig[@"target"];
+        item.action = NSSelectorFromString(orig[@"action"]);
+    }
+    [self.wrappedToolbarItems removeAllObjects];
+}
+
+- (void)nuToolbarViewSwitch:(NSToolbarItem *)sender
+{
+    NSDictionary *orig = self.wrappedToolbarItems[sender.itemIdentifier];
+    if (orig == nil) return;
+    [self.sidebar selectRowIndexes:[NSIndexSet indexSetWithIndex:1] byExtendingSelection:NO];
+    [self showSection:NUSectionNetworks];
+    [NSApp sendAction:NSSelectorFromString(orig[@"action"]) to:orig[@"target"] from:sender];
 }
 
 #pragma mark - Sections

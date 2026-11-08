@@ -23,10 +23,19 @@
 
 - (void)loadView
 {
+    // Layout note (owner UAT 2026-11-07 20:59): the frames below are the
+    // design size; the shell stretches this view to the content area at
+    // any window size, so every subview carries an autoresizing mask —
+    // headers/status pinned to the top (flexible BOTTOM margin), the two
+    // tables flexible in the directions they can grow, the buttons and
+    // the note pinned to the bottom (fixed bottom margin, the default).
+    // Without masks the whole layout stayed a fixed 760x520 block
+    // anchored bottom-left and the panel read as layered/offset.
     NSView *root = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 760, 520)];
 
     NSTextField *listHeader = [NSTextField labelWithString:@"BASE STATIONS"];
     listHeader.frame = NSMakeRect(16, 492, 200, 16);
+    listHeader.autoresizingMask = NSViewMinYMargin;
     listHeader.font = [NSFont systemFontOfSize:11 weight:NSFontWeightSemibold];
     listHeader.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1]; // SDS muted
     [root addSubview:listHeader];
@@ -34,10 +43,12 @@
     NSScrollView *listScroll = [[NSScrollView alloc] initWithFrame:NSMakeRect(16, 96, 216, 388)];
     listScroll.hasVerticalScroller = YES;
     listScroll.borderType = NSBezelBorder;
+    listScroll.autoresizingMask = NSViewHeightSizable;
     self.stationTable = [[NSTableView alloc] initWithFrame:listScroll.contentView.bounds];
     NSTableColumn *nameCol = [[NSTableColumn alloc] initWithIdentifier:@"name"];
     nameCol.title = @"Station";
     nameCol.width = 200;
+    nameCol.resizingMask = NSTableColumnAutoresizingMask;
     [self.stationTable addTableColumn:nameCol];
     self.stationTable.dataSource = self;
     self.stationTable.delegate = self;
@@ -65,6 +76,7 @@
     NSScrollView *configScroll = [[NSScrollView alloc] initWithFrame:NSMakeRect(248, 48, 496, 436)];
     configScroll.hasVerticalScroller = YES;
     configScroll.borderType = NSBezelBorder;
+    configScroll.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     self.configTable = [[NSTableView alloc] initWithFrame:configScroll.contentView.bounds];
     NSTableColumn *itemCol = [[NSTableColumn alloc] initWithIdentifier:@"item"];
     itemCol.title = @"Item";
@@ -72,6 +84,7 @@
     NSTableColumn *valueCol = [[NSTableColumn alloc] initWithIdentifier:@"value"];
     valueCol.title = @"Value";
     valueCol.width = 300;
+    valueCol.resizingMask = NSTableColumnAutoresizingMask;
     [self.configTable addTableColumn:itemCol];
     [self.configTable addTableColumn:valueCol];
     self.configTable.dataSource = self;
@@ -82,6 +95,7 @@
 
     self.statusLabel = [NSTextField wrappingLabelWithString:@"Looking for base stations on the local network (Bonjour)…"];
     self.statusLabel.frame = NSMakeRect(248, 492, 496, 16);
+    self.statusLabel.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
     self.statusLabel.font = [NSFont systemFontOfSize:12];
     self.statusLabel.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1];
     [root addSubview:self.statusLabel];

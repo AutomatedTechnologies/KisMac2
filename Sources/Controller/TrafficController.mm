@@ -102,7 +102,18 @@
 
 -(void)awakeFromNib
 {
-    [_modeButton selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"GraphMode"]];
+    // Default the graph to Signal until the user picks a mode: the scan
+    // path records per-network signal history (WaveNet graphData), while
+    // the Bytes/Packets yields only exist on a packet-capture path - with
+    // the historical Bytes default the Graph opened on a flat zero line
+    // and read as non-functioning (owner UAT 2026-11-07 20:59). A stored
+    // GraphMode (the user's own popup choice) is honored exactly as
+    // before; the popup order matches the data enum (Bytes/Packets/
+    // Signal = trafficData/packetData/signalData).
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"GraphMode"] == nil)
+        [_modeButton selectItemAtIndex:signalData];
+    else
+        [_modeButton selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"GraphMode"]];
     [_intervalButton selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"GraphTimeInterval"]];
 
     // default to 30-second interval

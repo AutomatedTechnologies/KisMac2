@@ -29,6 +29,8 @@
 		E50000000000000000000012 /* NUDiagnoseEngines.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000011 /* NUDiagnoseEngines.m */; };
 		E50000000000000000000015 /* NUDiagnoseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000014 /* NUDiagnoseViewController.m */; };
 		E50000000000000000000018 /* NUAirPort.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000017 /* NUAirPort.m */; };
+		E50000000000000000000042 /* NUDriveInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000041 /* NUDriveInventory.m */; };
+		E50000000000000000000045 /* NUOptimizationEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000044 /* NUOptimizationEngine.m */; };
 		E50000000000000000000021 /* NUManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000020 /* NUManageViewController.m */; };
 		E50000000000000000000024 /* NUShellController.m in Sources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000023 /* NUShellController.m */; };
 		E50000000000000000000026 /* icon-networks.png in Resources */ = {isa = PBXBuildFile; fileRef = E50000000000000000000025 /* icon-networks.png */; };
@@ -206,6 +208,10 @@
 		E50000000000000000000014 /* NUDiagnoseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUDiagnoseViewController.m; sourceTree = "<group>"; };
 		E50000000000000000000016 /* NUAirPort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUAirPort.h; sourceTree = "<group>"; };
 		E50000000000000000000017 /* NUAirPort.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUAirPort.m; sourceTree = "<group>"; };
+		E50000000000000000000040 /* NUDriveInventory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUDriveInventory.h; sourceTree = "<group>"; };
+		E50000000000000000000041 /* NUDriveInventory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUDriveInventory.m; sourceTree = "<group>"; };
+		E50000000000000000000043 /* NUOptimizationEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUOptimizationEngine.h; sourceTree = "<group>"; };
+		E50000000000000000000044 /* NUOptimizationEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUOptimizationEngine.m; sourceTree = "<group>"; };
 		E50000000000000000000019 /* NUManageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUManageViewController.h; sourceTree = "<group>"; };
 		E50000000000000000000020 /* NUManageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NUManageViewController.m; sourceTree = "<group>"; };
 		E50000000000000000000022 /* NUShellController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NUShellController.h; sourceTree = "<group>"; };
@@ -506,6 +512,10 @@
 			children = (
 				E50000000000000000000016 /* NUAirPort.h */,
 				E50000000000000000000017 /* NUAirPort.m */,
+				E50000000000000000000040 /* NUDriveInventory.h */,
+				E50000000000000000000041 /* NUDriveInventory.m */,
+				E50000000000000000000043 /* NUOptimizationEngine.h */,
+				E50000000000000000000044 /* NUOptimizationEngine.m */,
 				E50000000000000000000019 /* NUManageViewController.h */,
 				E50000000000000000000020 /* NUManageViewController.m */,
 			);
@@ -1239,6 +1249,8 @@
 				E50000000000000000000012 /* NUDiagnoseEngines.m in Sources */,
 				E50000000000000000000015 /* NUDiagnoseViewController.m in Sources */,
 				E50000000000000000000018 /* NUAirPort.m in Sources */,
+				E50000000000000000000042 /* NUDriveInventory.m in Sources */,
+				E50000000000000000000045 /* NUOptimizationEngine.m in Sources */,
 				E50000000000000000000021 /* NUManageViewController.m in Sources */,
 				E50000000000000000000024 /* NUShellController.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,

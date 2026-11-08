@@ -33,9 +33,16 @@ typedef NS_ENUM(NSInteger, NUPanel) {
 
 - (void)loadView
 {
+    // Layout note (owner UAT 2026-11-07 20:59): frames are the design
+    // size; the shell stretches this view, so subviews carry autoresizing
+    // masks — the control row is pinned to the top (flexible BOTTOM
+    // margin), the count/run/stop group is also pinned to the right
+    // (flexible LEFT margin), the target field and output view stretch.
+    // Without masks the panel stayed a fixed block anchored bottom-left.
     NSView *root = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 760, 520)];
 
     self.panelPopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(16, 478, 180, 26) pullsDown:NO];
+    self.panelPopup.autoresizingMask = NSViewMinYMargin;
     [self.panelPopup addItemsWithTitles:@[@"Ping", @"Netstat", @"Traceroute", @"Speed Test"]];
     self.panelPopup.target = self;
     self.panelPopup.action = @selector(panelChanged:);
@@ -43,33 +50,40 @@ typedef NS_ENUM(NSInteger, NUPanel) {
 
     self.targetLabel = [NSTextField labelWithString:@"Target"];
     self.targetLabel.frame = NSMakeRect(212, 482, 48, 18);
+    self.targetLabel.autoresizingMask = NSViewMinYMargin;
     [root addSubview:self.targetLabel];
 
     self.targetField = [[NSTextField alloc] initWithFrame:NSMakeRect(262, 479, 220, 24)];
     self.targetField.placeholderString = @"hostname or IP address";
+    self.targetField.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
     [root addSubview:self.targetField];
 
     self.countLabel = [NSTextField labelWithString:@"Count"];
     self.countLabel.frame = NSMakeRect(496, 482, 44, 18);
+    self.countLabel.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
     [root addSubview:self.countLabel];
 
     self.countField = [[NSTextField alloc] initWithFrame:NSMakeRect(542, 479, 48, 24)];
     self.countField.stringValue = @"10";
+    self.countField.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
     [root addSubview:self.countField];
 
     self.runButton = [NSButton buttonWithTitle:@"Run" target:self action:@selector(runPressed:)];
     self.runButton.frame = NSMakeRect(604, 477, 64, 28);
     self.runButton.bezelStyle = NSBezelStyleRounded;
+    self.runButton.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
     [root addSubview:self.runButton];
 
     self.stopButton = [NSButton buttonWithTitle:@"Stop" target:self action:@selector(stopPressed:)];
     self.stopButton.frame = NSMakeRect(674, 477, 64, 28);
     self.stopButton.bezelStyle = NSBezelStyleRounded;
     self.stopButton.enabled = NO;
+    self.stopButton.autoresizingMask = NSViewMinXMargin | NSViewMinYMargin;
     [root addSubview:self.stopButton];
 
     self.summaryLabel = [NSTextField wrappingLabelWithString:@""];
     self.summaryLabel.frame = NSMakeRect(16, 442, 728, 30);
+    self.summaryLabel.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
     self.summaryLabel.font = [NSFont systemFontOfSize:12];
     self.summaryLabel.textColor = [NSColor colorWithCalibratedWhite:0.27 alpha:1]; // SDS muted
     [root addSubview:self.summaryLabel];
@@ -77,6 +91,7 @@ typedef NS_ENUM(NSInteger, NUPanel) {
     NSScrollView *scroll = [[NSScrollView alloc] initWithFrame:NSMakeRect(16, 16, 728, 418)];
     scroll.hasVerticalScroller = YES;
     scroll.borderType = NSBezelBorder;
+    scroll.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     self.outputView = [[NSTextView alloc] initWithFrame:scroll.contentView.bounds];
     self.outputView.editable = NO;
     self.outputView.font = [NSFont monospacedDigitSystemFontOfSize:12 weight:NSFontWeightRegular];
