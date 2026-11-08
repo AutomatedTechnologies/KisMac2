@@ -79,6 +79,29 @@ jobs:
           fi
           echo "Built app: $APP"
           test -n "$APP"
+          # Identity + audit gate (2026-11-08, RC preparation): stamp the CI
+          # run tag into CFBundleVersion, then fail the run unless the built
+          # plist reads back the Academy bundle ID and the Academy audit
+          # entry with all flags true (Distro files/08 — Distro's installer
+          # refuses anything else).
+          PLIST="$APP/Contents/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion test-build-${{ github.run_number }}" "$PLIST"
+          BID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$PLIST")
+          BVER=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST")
+          AUD="com.detroitautomationacademy.audit"
+          A_DIS=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Disassembled" "$PLIST")
+          A_SCAN=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Scanned" "$PLIST")
+          A_REC=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Recompiled" "$PLIST")
+          A_AUTH=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Authority" "$PLIST")
+          A_DATE=$(/usr/libexec/PlistBuddy -c "Print :$AUD:Date" "$PLIST")
+          echo "Bundle identity: id=$BID version=$BVER audit=$A_DIS/$A_SCAN/$A_REC $A_AUTH $A_DATE"
+          test "$BID" = "com.detroitautomationacademy.kismac"
+          test "$BVER" = "test-build-${{ github.run_number }}"
+          test "$A_DIS" = "true"
+          test "$A_SCAN" = "true"
+          test "$A_REC" = "true"
+          test "$A_AUTH" = "Detroit Automation Academy"
+          test "$A_DATE" = "2026-11-08"
           ditto -c -k --keepParent "$APP" KisMac-test.zip
           ls -la KisMac-test.zip
 
