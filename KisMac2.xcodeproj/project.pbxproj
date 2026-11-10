@@ -52,6 +52,9 @@
 		0035347006A5DD8500AB4577 /* PrefsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 003533F306A5DD8500AB4577 /* PrefsWindow.m */; };
 		0035347406A5DD8500AB4577 /* BridgeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003533F806A5DD8500AB4577 /* BridgeController.m */; };
 		0035347606A5DD8500AB4577 /* GPSController.m in Sources */ = {isa = PBXBuildFile; fileRef = 003533FB06A5DD8500AB4577 /* GPSController.m */; };
+		ACAD10010000000000000011 /* AcademyWelcomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = ACAD10010000000000000002 /* AcademyWelcomeController.m */; };
+		ACAD10010000000000000012 /* AcademyAppIconView.m in Sources */ = {isa = PBXBuildFile; fileRef = ACAD10010000000000000004 /* AcademyAppIconView.m */; };
+		ACAD10010000000000000013 /* startup-sound.wav in Resources */ = {isa = PBXBuildFile; fileRef = ACAD10010000000000000005 /* startup-sound.wav */; };
 		0035348806A5DD8500AB4577 /* WaveDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 0035341006A5DD8500AB4577 /* WaveDriver.m */; };
 		0035348C06A5DD8500AB4577 /* WaveDriverAirport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0035341406A5DD8500AB4577 /* WaveDriverAirport.m */; };
 		0035349406A5DD8500AB4577 /* WaveDriverUSBIntersil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0035341C06A5DD8500AB4577 /* WaveDriverUSBIntersil.mm */; };
@@ -238,6 +241,11 @@
 		003533F806A5DD8500AB4577 /* BridgeController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BridgeController.m; sourceTree = "<group>"; };
 		003533FA06A5DD8500AB4577 /* GPSController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GPSController.h; sourceTree = "<group>"; };
 		003533FB06A5DD8500AB4577 /* GPSController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = GPSController.m; sourceTree = "<group>"; };
+		ACAD10010000000000000001 /* AcademyWelcomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AcademyWelcomeController.h; sourceTree = "<group>"; };
+		ACAD10010000000000000002 /* AcademyWelcomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AcademyWelcomeController.m; sourceTree = "<group>"; };
+		ACAD10010000000000000003 /* AcademyAppIconView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AcademyAppIconView.h; sourceTree = "<group>"; };
+		ACAD10010000000000000004 /* AcademyAppIconView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AcademyAppIconView.m; sourceTree = "<group>"; };
+		ACAD10010000000000000005 /* startup-sound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "startup-sound.wav"; path = "Resources/startup-sound.wav"; sourceTree = "<group>"; };
 		0035340F06A5DD8500AB4577 /* WaveDriver.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WaveDriver.h; sourceTree = "<group>"; };
 		0035341006A5DD8500AB4577 /* WaveDriver.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = WaveDriver.m; sourceTree = "<group>"; };
 		0035341306A5DD8500AB4577 /* WaveDriverAirport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = WaveDriverAirport.h; sourceTree = "<group>"; };
@@ -599,6 +607,10 @@
 			children = (
 				003533FA06A5DD8500AB4577 /* GPSController.h */,
 				003533FB06A5DD8500AB4577 /* GPSController.m */,
+				ACAD10010000000000000001 /* AcademyWelcomeController.h */,
+				ACAD10010000000000000002 /* AcademyWelcomeController.m */,
+				ACAD10010000000000000003 /* AcademyAppIconView.h */,
+				ACAD10010000000000000004 /* AcademyAppIconView.m */,
 			);
 			name = Support;
 			path = Sources/Support;
@@ -814,6 +826,7 @@
 				0035334206A5DD5700AB4577 /* Scripts */,
 				00F57C4A06A886630035AE2F /* Strings */,
 				0035334106A5DD5700AB4577 /* Info.plist */,
+				ACAD10010000000000000005 /* startup-sound.wav */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1062,6 +1075,7 @@
 				698665470FAF5899002D1A84 /* spin.gif in Resources */,
 				A529AD9D1A20A4B400CD8E1E /* Preferences.xib in Resources */,
 				A5A2F59619DD74C20046299A /* Images.xcassets in Resources */,
+				ACAD10010000000000000013 /* startup-sound.wav in Resources */,
 				A5A2F5AB19DDA55B0046299A /* NetworkLEAP.tif in Resources */,
 				A529AD9A1A20A4B400CD8E1E /* Import.xib in Resources */,
 				A5A2F5AC19DDA55B0046299A /* NetworkNoEnc.tif in Resources */,
@@ -1147,6 +1161,8 @@
 				0035347006A5DD8500AB4577 /* PrefsWindow.m in Sources */,
 				0035347406A5DD8500AB4577 /* BridgeController.m in Sources */,
 				0035347606A5DD8500AB4577 /* GPSController.m in Sources */,
+				ACAD10010000000000000011 /* AcademyWelcomeController.m in Sources */,
+				ACAD10010000000000000012 /* AcademyAppIconView.m in Sources */,
 				0035348806A5DD8500AB4577 /* WaveDriver.m in Sources */,
 				0035348C06A5DD8500AB4577 /* WaveDriverAirport.m in Sources */,
 				0035349406A5DD8500AB4577 /* WaveDriverUSBIntersil.mm in Sources */,
