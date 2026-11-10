@@ -113,6 +113,32 @@ jobs:
           test "$A_REC" = "true"
           test "$A_AUTH" = "Detroit Automation Academy"
           test "$A_DATE" = "2026-11-08"
+          # SDS-10 conformance gate (SDS10-T1, Distro files/08): the built
+          # plist must carry com.detroitautomationacademy.conformance with
+          # exactly the clauses this build meets, all true here.
+          CONF="com.detroitautomationacademy.conformance"
+          C_STD=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Standard" "$PLIST")
+          C_LOGO=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Logo" "$PLIST")
+          C_VER=$(/usr/libexec/PlistBuddy -c "Print :$CONF:VersionAtStartup" "$PLIST")
+          C_SND=$(/usr/libexec/PlistBuddy -c "Print :$CONF:StartupSound" "$PLIST")
+          C_MENU=$(/usr/libexec/PlistBuddy -c "Print :$CONF:MenuBar" "$PLIST")
+          C_AUTH=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Authority" "$PLIST")
+          C_DATE=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Date" "$PLIST")
+          echo "Conformance entry: Standard=$C_STD Logo=$C_LOGO VersionAtStartup=$C_VER StartupSound=$C_SND MenuBar=$C_MENU $C_AUTH $C_DATE"
+          test "$C_STD" = "SDS-10"
+          test "$C_LOGO" = "true"
+          test "$C_VER" = "true"
+          test "$C_SND" = "true"
+          test "$C_MENU" = "true"
+          test "$C_AUTH" = "Detroit Automation Academy"
+          test "$C_DATE" = "2026-11-10"
+          # Startup sound (SDS-10 10.3.1): the bundled asset must hash to
+          # the library master, byte-identical in every app.
+          SND="$APP/Contents/Resources/startup-sound.wav"
+          test -f "$SND"
+          SND_SHA=$(shasum -a 256 "$SND" | awk '{print $1}')
+          echo "startup-sound.wav SHA-256: $SND_SHA"
+          test "$SND_SHA" = "07a113244c6b432b22954a089ce519bd239311b14a48f26ae85214ed8c25b09a"
           # IP protection T2 (J directive 2026-11-08 04:26): bundle the
           # Academy license and notice in Resources, byte-identical to the
           # governing texts. The files live at the repo root; every other

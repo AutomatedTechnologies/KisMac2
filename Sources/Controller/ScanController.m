@@ -2,7 +2,7 @@
  
  File:			ScanController.h
  Program:		KisMAC
- Author:		Michael Ro�berg
+ Author:		Michael Ro§berg
                 mick@binaervarianz.de
  Changes:       Vitalii Parovishnyk(1012-2015)
  
@@ -32,6 +32,7 @@
 #import "WaveScanner.h"
 #import "WaveHelper.h"
 #import "GPSController.h"
+#import "AcademyWelcomeController.h"
 #import "WaveClient.h"
 #import "WaveNet.h"
 #import "../Controller/TrafficController.h"
@@ -790,8 +791,13 @@ static io_connect_t  root_port;    // a reference to the Root Power Domain IOSer
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     [self updatePrefs:nil];
+    // SDS-8 welcome + SDS-10 startup identity (SDS10-T1): the shared
+    // AcademyWelcomeController presents the welcome screen at launch
+    // (AppIcon composition via AcademyAppIconView, version line
+    // runtime-read from Info.plist, standard startup sound).
+    [AcademyWelcomeController presentWelcome];
     // F-04: crash-report collection/POST removed (Academy Update Infrastructure
-    // Standard) — crash handling is OS-native; no off-machine reporting.
+    // Standard) â crash handling is OS-native; no off-machine reporting.
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
