@@ -25,9 +25,15 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#import <Growl/Growl.h>
-
-@interface GrowlController : NSObject<GrowlApplicationBridgeDelegate>
+// Growl excision (SDS-10 10.6, second half; owner directive
+// 2026-11-13 17:31 EST): this controller no longer imports or
+// links Growl. The class name and every method signature are the
+// engine's internal identifiers and stay; the implementation posts
+// natively via NSUserNotificationCenter from the main bundle.
+// Growl was a separate third-party application (retired 2020)
+// holding a self-asserted, unauthenticated sender identity — a
+// spoofing surface, not a name string.
+@interface GrowlController : NSObject
 {
 }
 
