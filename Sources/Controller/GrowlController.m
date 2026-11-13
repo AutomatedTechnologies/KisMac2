@@ -27,6 +27,13 @@
 
 #import "GrowlController.h"
 
+// Growl excision (SDS-10 10.6, second half): GrowlController keeps
+// its name and signatures (internal identifiers) but conforms to
+// the native NSUserNotificationCenterDelegate in this extension
+// only -- no Growl protocol, framework, or helper app remains.
+@interface GrowlController () <NSUserNotificationCenterDelegate>
+@end
+
 @implementation GrowlController
 
 - (id)init
@@ -34,13 +41,14 @@
 	return [super init];
 }
 
-// SDS-10 10.6 (notification identity): the name Notification Center /
-// Growl attributes a notification to is read from the main bundle's
-// own Info.plist at runtime (CFBundleName, then CFBundleDisplayName)
-// -- never a hardcoded upstream name. On the Workbench line the main
-// bundle is Workbench.app (com.detroitautomationacademy.workbench),
-// so every banner from this controller reads Workbench; the literal
-// fallback covers only a bundle with no name keys at all.
+// SDS-10 10.6 (notification identity): the banner title is read
+// from the main bundle's own Info.plist at runtime (CFBundleName,
+// then CFBundleDisplayName) -- never a hardcoded upstream name, and
+// (10.6 second half) never a name asserted to a third-party
+// intermediary: posting is native (below), so Notification Center
+// attributes the notification to this bundle
+// (com.detroitautomationacademy.workbench) by construction. The
+// literal fallback covers only a bundle with no name keys at all.
 + (NSString *)notificationApplicationName
 {
 	NSString *name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
@@ -56,18 +64,41 @@
 
 - (void)registerGrowl
 {
-	NSBundle *myBundle = [NSBundle bundleForClass:[GrowlController class]];
-	NSString *growlPath = [[myBundle privateFrameworksPath]
-	stringByAppendingPathComponent:@"Growl.framework"];
-	NSBundle *growlBundle = [NSBundle bundleWithPath:growlPath];
-	if (growlBundle && [growlBundle load]) {
-		[GrowlApplicationBridge setGrowlDelegate:self];
+	// Name retained (internal identifier; ScanController calls it
+	// at scan setup). It now registers NOTHING with any intermediary:
+	// it installs this controller as the NSUserNotificationCenter
+	// delegate so banners present while the app is active. If the
+	// center is unavailable the failure is logged, and the posting
+	// calls below still deliver through the default center -- there
+	// is no external helper whose absence silently drops them.
+	NSUserNotificationCenter *center = [NSUserNotificationCenter defaultUserNotificationCenter];
+	if (center) {
+		center.delegate = self;
 	} else {
-		DBNSLog(@"Could not load Growl.framework");
+		DBNSLog(@"NSUserNotificationCenter unavailable");
 	}
 }
 
-#pragma mark Growl Notifications
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+{
+	return YES;
+}
+
+// Native posting (SDS-10 10.6): the notification is delivered by
+// this process, from the main bundle. Notification Center takes
+// the attribution (bundle identity + AppIcon) from the bundle
+// itself; the title carries the ship name read at runtime and the
+// body is the scan-lifecycle text -- the same two lines the Growl
+// banner showed, with the name now bound to the bundle.
++ (void)deliverNativeNotificationWithDescription:(NSString *)description
+{
+	NSUserNotification *notification = [[NSUserNotification alloc] init];
+	notification.title = [GrowlController notificationApplicationName];
+	notification.informativeText = description;
+	[[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+}
+
+#pragma mark Notifications (native, ex-Growl)
 
 + (void)notifyGrowlOpenNetwork:(NSString *)notname SSID:(NSString *)SSID BSSID:(NSString *)BSSID signal:(NSUInteger)signal channel:(NSUInteger)channel
 {
@@ -100,34 +131,12 @@
 
 + (void)notifyGrowlStartScan
 {
-    NSData * iconData = nil;
-    NSImage * image = [NSImage imageNamed:@"NSApplicationIcon"];
-                       
-    if(image != nil)
-    {
-        iconData = [image TIFFRepresentation];
-    }
-    
-	[GrowlApplicationBridge
-	notifyWithTitle:[GrowlController notificationApplicationName]
-		description:@"Starting Scan..."
-   notificationName:@"Scan Started/Stopped"
-		   iconData:iconData
-		   priority:0
-		   isSticky:NO
-	   clickContext:nil];
+	[GrowlController deliverNativeNotificationWithDescription:@"Starting Scan..."];
 }
 
 + (void)notifyGrowlStopScan
 {
-	[GrowlApplicationBridge
-	notifyWithTitle:[GrowlController notificationApplicationName]
-		description:@"Stopping Scan..."
-   notificationName:@"Scan Started/Stopped"
-		   iconData:[NSData dataWithData:[[NSImage imageNamed:@"NSApplicationIcon"] TIFFRepresentation]]
-		   priority:0
-		   isSticky:NO
-	   clickContext:nil];
+	[GrowlController deliverNativeNotificationWithDescription:@"Stopping Scan..."];
 }
 
 + (void)notifyGrowlWPAChallenge:(NSString *)notname mac:(NSString *)mac bssid:(NSString *)bssid
@@ -145,24 +154,4 @@
 
 }
 
-#pragma mark Growl Methods
-
-- (NSString *)applicationNameForGrowl {
-	return [GrowlController notificationApplicationName];
-}
-
-- (NSImage *)applicationIconForGrowl {
-	// SDS-10 10.6: the attributed icon is the bundle's own AppIcon
-	// (the registered ship logo), the same image the notify calls
-	// already pass as iconData via NSApplicationIcon.
-	return [NSImage imageNamed:@"NSApplicationIcon"];
-}
-
-- (NSDictionary *)registrationDictionaryForGrowl {
-	NSArray *allNotifications = @[@"Scan Started/Stopped",@"Open Network Found",@"Closed Network Found",@"Probe Request Received",@"WPA Challenge/Response",@"Hidden SSID Revealed"];
-	NSArray *defaultNotifications = @[@"Scan Started/Stopped",@"Open Network Found",@"Closed Network Found",@"WPA Challenge/Response",@"Hidden SSID Revealed"];
-	NSDictionary *registrationDict = @{GROWL_NOTIFICATIONS_ALL: allNotifications, GROWL_NOTIFICATIONS_DEFAULT: defaultNotifications};
-	return registrationDict;
-}
-	
 @end
