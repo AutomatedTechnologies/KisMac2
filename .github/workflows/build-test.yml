@@ -26,6 +26,26 @@ jobs:
           xcodebuild -version
           xcrun --show-sdk-path
 
+      - name: Verify notification identity + Growl excision source (SDS-10 10.6)
+        run: |
+          # SDS-10 10.6 both halves (finding S-03, KisMac line). First
+          # half: the attributed name is the ship name, read from the
+          # main bundle at runtime. Second half (10.6.5): NO
+          # third-party notification intermediary -- Growl (separate
+          # app, retired 2020, self-asserted unauthenticated sender
+          # identity) is excised; posting is native
+          # NSUserNotificationCenter from the main bundle.
+          F="Sources/Controller/GrowlController.m"
+          H="Sources/Controller/GrowlController.h"
+          test "$(grep -c 'deliverNativeNotificationWithDescription' "$F")" -ge 3
+          grep -q 'NSUserNotificationCenter' "$F"
+          for pat in 'GrowlApplicationBridge' 'GROWL_NOTIFICATIONS' 'Growl.framework' 'setGrowlDelegate' 'applicationNameForGrowl' 'registrationDictionaryForGrowl' 'notifyWithTitle'; do
+            if grep -q "$pat" "$F" "$H"; then echo "FAIL: Growl remnant in notification source: $pat"; exit 1; fi
+          done
+          if grep -q 'Growl.framework' KisMac2.xcodeproj/project.pbxproj; then echo "FAIL: Growl.framework still referenced in project"; exit 1; fi
+          if [ -e "Resources/Growl.framework" ]; then echo "FAIL: Resources/Growl.framework still in tree"; exit 1; fi
+          echo "Notification identity + excision source gate: PASS (native posting, ship name from main bundle, no Growl)"
+
       - name: Prepare framework-style include shim
         run: |
           SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
@@ -111,16 +131,18 @@ jobs:
           C_VER=$(/usr/libexec/PlistBuddy -c "Print :$CONF:VersionAtStartup" "$PLIST")
           C_SND=$(/usr/libexec/PlistBuddy -c "Print :$CONF:StartupSound" "$PLIST")
           C_MENU=$(/usr/libexec/PlistBuddy -c "Print :$CONF:MenuBar" "$PLIST")
+          C_NOTIF=$(/usr/libexec/PlistBuddy -c "Print :$CONF:NotificationIdentity" "$PLIST")
           C_AUTH=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Authority" "$PLIST")
           C_DATE=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Date" "$PLIST")
-          echo "Conformance entry: Standard=$C_STD Logo=$C_LOGO VersionAtStartup=$C_VER StartupSound=$C_SND MenuBar=$C_MENU $C_AUTH $C_DATE"
+          echo "Conformance entry: Standard=$C_STD Logo=$C_LOGO VersionAtStartup=$C_VER StartupSound=$C_SND MenuBar=$C_MENU NotificationIdentity=$C_NOTIF $C_AUTH $C_DATE"
           test "$C_STD" = "SDS-10"
           test "$C_LOGO" = "true"
           test "$C_VER" = "true"
           test "$C_SND" = "true"
           test "$C_MENU" = "true"
+          test "$C_NOTIF" = "true"
           test "$C_AUTH" = "Detroit Automation Academy"
-          test "$C_DATE" = "2026-11-10"
+          test "$C_DATE" = "2026-11-13"
           # Startup sound (SDS-10 10.3.1): the bundled asset must hash to
           # the library master, byte-identical in every app.
           SND="$APP/Contents/Resources/startup-sound.wav"
@@ -135,6 +157,13 @@ jobs:
           cp LICENSE-ACADEMY.txt NOTICE.txt "$APP/Contents/Resources/"
           test -f "$APP/Contents/Resources/LICENSE-ACADEMY.txt"
           test -f "$APP/Contents/Resources/NOTICE.txt"
+          # Growl excision assertion (SDS-10 10.6.5, finding S-03):
+          # the shipped bundle carries no Growl.framework and the
+          # binary neither links nor references it.
+          test ! -e "$APP/Contents/Frameworks/Growl.framework"
+          if otool -L "$APP/Contents/MacOS/KisMac2" | grep -qi growl; then echo "FAIL: binary links Growl"; exit 1; fi
+          if strings "$APP/Contents/MacOS/KisMac2" | grep -q 'GrowlApplicationBridge'; then echo "FAIL: binary references GrowlApplicationBridge"; exit 1; fi
+          echo "Growl excision bundle assertion: PASS (no framework, no link, no bridge symbols)"
           ditto -c -k --keepParent "$APP" KisMac-test.zip
           ls -la KisMac-test.zip
 
@@ -153,4 +182,4 @@ jobs:
           gh release create test-build-${{ github.run_number }} KisMac-test.zip \
             --prerelease \
             --title "KisMac test build ${{ github.run_number }}" \
-            --notes "Internal test build: SDS-8 welcome via the shared AcademyWelcomeController/AcademyAppIconView component (SDS10-T1) — AppIcon composition on the welcome screen, version line runtime-read from Info.plist, byte-identical startup-sound.wav (SDS-10 master), SDS-10 conformance entry stamped (Logo/VersionAtStartup/StartupSound/MenuBar), Academy IP texts bundled. Publisher: Detroit Automation Academy. Unsigned test build — not gate-cleared, not yet verified on the High Sierra rig."
+            --notes "Internal test build: Growl excised (SDS-10 10.6.5, finding S-03) — Growl.framework link/embed/files removed, GrowlController keeps its class name and every signature and now posts the Start/Stop Scan notifications natively via NSUserNotificationCenter from the main bundle, title read from the main bundle plist at runtime; SDS-10 conformance entry stamped (Logo/VersionAtStartup/StartupSound/MenuBar/NotificationIdentity, Date 2026-11-13), audit entry intact. SDS-8 welcome via the shared AcademyWelcomeController/AcademyAppIconView component (SDS10-T1), byte-identical startup-sound.wav (SDS-10 master), Academy IP texts bundled. Publisher: Detroit Automation Academy. Unsigned test build — not gate-cleared, not yet verified on the High Sierra rig."
