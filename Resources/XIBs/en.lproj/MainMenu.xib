@@ -191,10 +191,10 @@
         </window>
         <menu title="MainMenu" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
-                <menuItem title="KisMAC" id="491">
-                    <menu key="submenu" title="KisMAC" systemMenu="apple" id="481">
+                <menuItem title="Workbench" id="491">
+                    <menu key="submenu" title="Workbench" systemMenu="apple" id="481">
                         <items>
-                            <menuItem title="About KisMAC" id="484">
+                            <menuItem title="About Workbench" id="484">
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-2" id="529"/>
                                 </connections>
@@ -217,7 +217,7 @@
                             <menuItem isSeparatorItem="YES" id="488">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Hide KisMAC" keyEquivalent="h" id="492">
+                            <menuItem title="Hide Workbench" keyEquivalent="h" id="492">
                                 <connections>
                                     <action selector="hide:" target="-1" id="495"/>
                                 </connections>
@@ -237,7 +237,7 @@
                             <menuItem isSeparatorItem="YES" id="487">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit KisMAC" keyEquivalent="q" id="483">
+                            <menuItem title="Quit Workbench" keyEquivalent="q" id="483">
                                 <connections>
                                     <action selector="terminate:" target="-1" id="494"/>
                                 </connections>
@@ -884,33 +884,15 @@ CA
                 <menuItem title="Help" id="713">
                     <menu key="submenu" title="Help" id="714">
                         <items>
-                            <menuItem title="KisMAC website" id="859">
+                            <menuItem title="Workbench website" id="859">
                                 <connections>
                                     <action selector="openWebsiteURL:" target="466" id="862"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Donate to KisMAC" id="860">
-                                <connections>
-                                    <action selector="openDonateURL:" target="466" id="863"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="861">
-                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                            </menuItem>
-                            <menuItem title="KisMAC FAQ" id="1555">
-                                <connections>
-                                    <action selector="openFAQURL:" target="466" id="1558"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="KisMAC Forums" id="1556">
-                                <connections>
-                                    <action selector="openForumsURL:" target="466" id="1557"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="1554">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="KisMAC Help" keyEquivalent="?" id="715">
+                            <menuItem title="Workbench Help" keyEquivalent="?" id="715">
                                 <connections>
                                     <action selector="showHelp:" target="-1" id="716"/>
                                 </connections>

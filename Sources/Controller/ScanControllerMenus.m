@@ -898,7 +898,7 @@
 
 - (IBAction)openWebsiteURL:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/AutomatedTechnologies/KisMac2"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://detroitautomationacademy.com/software/kismac/"]];
 }
 
 - (IBAction)openDonateURL:(id)sender
