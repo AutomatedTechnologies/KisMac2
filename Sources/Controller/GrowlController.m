@@ -34,6 +34,25 @@
 	return [super init];
 }
 
+// SDS-10 10.6 (notification identity): the name Notification Center /
+// Growl attributes a notification to is read from the main bundle's
+// own Info.plist at runtime (CFBundleName, then CFBundleDisplayName)
+// -- never a hardcoded upstream name. On the Workbench line the main
+// bundle is Workbench.app (com.detroitautomationacademy.workbench),
+// so every banner from this controller reads Workbench; the literal
+// fallback covers only a bundle with no name keys at all.
++ (NSString *)notificationApplicationName
+{
+	NSString *name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
+	if (![name length]) {
+		name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+	}
+	if (![name length]) {
+		name = @"Workbench";
+	}
+	return name;
+}
+
 
 - (void)registerGrowl
 {
@@ -90,7 +109,7 @@
     }
     
 	[GrowlApplicationBridge
-	notifyWithTitle:@"KisMAC"
+	notifyWithTitle:[GrowlController notificationApplicationName]
 		description:@"Starting Scan..."
    notificationName:@"Scan Started/Stopped"
 		   iconData:iconData
@@ -102,7 +121,7 @@
 + (void)notifyGrowlStopScan
 {
 	[GrowlApplicationBridge
-	notifyWithTitle:@"KisMAC"
+	notifyWithTitle:[GrowlController notificationApplicationName]
 		description:@"Stopping Scan..."
    notificationName:@"Scan Started/Stopped"
 		   iconData:[NSData dataWithData:[[NSImage imageNamed:@"NSApplicationIcon"] TIFFRepresentation]]
@@ -129,7 +148,14 @@
 #pragma mark Growl Methods
 
 - (NSString *)applicationNameForGrowl {
-	return @"KisMAC";
+	return [GrowlController notificationApplicationName];
+}
+
+- (NSImage *)applicationIconForGrowl {
+	// SDS-10 10.6: the attributed icon is the bundle's own AppIcon
+	// (the registered ship logo), the same image the notify calls
+	// already pass as iconData via NSApplicationIcon.
+	return [NSImage imageNamed:@"NSApplicationIcon"];
 }
 
 - (NSDictionary *)registrationDictionaryForGrowl {
