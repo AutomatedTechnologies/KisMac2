@@ -32,6 +32,21 @@ jobs:
           xcodebuild -version
           xcrun --show-sdk-path
 
+      - name: Verify notification identity source (SDS-10 10.6)
+        run: |
+          # GrowlController is the only notification poster in this
+          # bundle (notifyGrowlStartScan / notifyGrowlStopScan are the
+          # only non-empty notify methods). It must derive its Growl
+          # application name and notification titles from the main
+          # bundle's Info.plist at runtime -- a hardcoded upstream
+          # name here is what shipped banners reading "KisMAC" from
+          # Workbench.app (owner screenshot, 2026-11-13 17:25 EST).
+          F="Sources/Controller/GrowlController.m"
+          test "$(grep -c 'notificationApplicationName' "$F")" -ge 4
+          if grep -q 'notifyWithTitle:@"KisMAC"' "$F"; then echo "FAIL: hardcoded KisMAC notification title"; exit 1; fi
+          if grep -q 'return @"KisMAC";' "$F"; then echo "FAIL: hardcoded KisMAC Growl application name"; exit 1; fi
+          echo "Notification identity source gate: PASS (name derived from main bundle)"
+
       - name: Prepare framework-style include shim
         run: |
           SHIM="$GITHUB_WORKSPACE/.ci-include-shim"
@@ -122,16 +137,18 @@ jobs:
           C_VER=$(/usr/libexec/PlistBuddy -c "Print :$CONF:VersionAtStartup" "$PLIST")
           C_SND=$(/usr/libexec/PlistBuddy -c "Print :$CONF:StartupSound" "$PLIST")
           C_MENU=$(/usr/libexec/PlistBuddy -c "Print :$CONF:MenuBar" "$PLIST")
+          C_NOTIF=$(/usr/libexec/PlistBuddy -c "Print :$CONF:NotificationIdentity" "$PLIST")
           C_AUTH=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Authority" "$PLIST")
           C_DATE=$(/usr/libexec/PlistBuddy -c "Print :$CONF:Date" "$PLIST")
-          echo "Conformance entry: Standard=$C_STD Logo=$C_LOGO VersionAtStartup=$C_VER StartupSound=$C_SND MenuBar=$C_MENU $C_AUTH $C_DATE"
+          echo "Conformance entry: Standard=$C_STD Logo=$C_LOGO VersionAtStartup=$C_VER StartupSound=$C_SND MenuBar=$C_MENU NotificationIdentity=$C_NOTIF $C_AUTH $C_DATE"
           test "$C_STD" = "SDS-10"
           test "$C_LOGO" = "true"
           test "$C_VER" = "true"
           test "$C_SND" = "true"
           test "$C_MENU" = "true"
+          test "$C_NOTIF" = "true"
           test "$C_AUTH" = "Detroit Automation Academy"
-          test "$C_DATE" = "2026-11-10"
+          test "$C_DATE" = "2026-11-13"
           # Startup sound (SDS-10 10.3.1): the bundled asset must hash to
           # the library master, byte-identical in every app.
           SND="$APP/Contents/Resources/startup-sound.wav"
