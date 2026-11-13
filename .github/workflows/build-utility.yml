@@ -32,20 +32,24 @@ jobs:
           xcodebuild -version
           xcrun --show-sdk-path
 
-      - name: Verify notification identity source (SDS-10 10.6)
+      - name: Verify notification identity + Growl excision source (SDS-10 10.6)
         run: |
-          # GrowlController is the only notification poster in this
-          # bundle (notifyGrowlStartScan / notifyGrowlStopScan are the
-          # only non-empty notify methods). It must derive its Growl
-          # application name and notification titles from the main
-          # bundle's Info.plist at runtime -- a hardcoded upstream
-          # name here is what shipped banners reading "KisMAC" from
-          # Workbench.app (owner screenshot, 2026-11-13 17:25 EST).
+          # SDS-10 10.6 both halves. First half: the attributed name
+          # is the ship name, read from the main bundle at runtime.
+          # Second half: NO third-party notification intermediary --
+          # Growl (separate app, retired 2020, self-asserted
+          # unauthenticated sender identity) is excised; posting is
+          # native NSUserNotificationCenter from the main bundle.
           F="Sources/Controller/GrowlController.m"
-          test "$(grep -c 'notificationApplicationName' "$F")" -ge 4
-          if grep -q 'notifyWithTitle:@"KisMAC"' "$F"; then echo "FAIL: hardcoded KisMAC notification title"; exit 1; fi
-          if grep -q 'return @"KisMAC";' "$F"; then echo "FAIL: hardcoded KisMAC Growl application name"; exit 1; fi
-          echo "Notification identity source gate: PASS (name derived from main bundle)"
+          H="Sources/Controller/GrowlController.h"
+          test "$(grep -c 'deliverNativeNotificationWithDescription' "$F")" -ge 3
+          grep -q 'NSUserNotificationCenter' "$F"
+          for pat in 'GrowlApplicationBridge' 'GROWL_NOTIFICATIONS' 'Growl.framework' 'setGrowlDelegate' 'applicationNameForGrowl' 'registrationDictionaryForGrowl' 'notifyWithTitle'; do
+            if grep -q "$pat" "$F" "$H"; then echo "FAIL: Growl remnant in notification source: $pat"; exit 1; fi
+          done
+          if grep -q 'Growl.framework' KisMac2.xcodeproj/project.pbxproj; then echo "FAIL: Growl.framework still referenced in project"; exit 1; fi
+          if [ -e "Resources/Growl.framework" ]; then echo "FAIL: Resources/Growl.framework still in tree"; exit 1; fi
+          echo "Notification identity + excision source gate: PASS (native posting, ship name from main bundle, no Growl)"
 
       - name: Prepare framework-style include shim
         run: |
@@ -163,6 +167,13 @@ jobs:
           cp LICENSE-ACADEMY.txt NOTICE.txt "$APP/Contents/Resources/"
           test -f "$APP/Contents/Resources/LICENSE-ACADEMY.txt"
           test -f "$APP/Contents/Resources/NOTICE.txt"
+          # Growl excision assertion (SDS-10 10.6, second half): the
+          # shipped bundle carries no Growl.framework and the binary
+          # neither links nor references it.
+          test ! -e "$APP/Contents/Frameworks/Growl.framework"
+          if otool -L "$APP/Contents/MacOS/Workbench" | grep -qi growl; then echo "FAIL: binary links Growl"; exit 1; fi
+          if strings "$APP/Contents/MacOS/Workbench" | grep -q 'GrowlApplicationBridge'; then echo "FAIL: binary references GrowlApplicationBridge"; exit 1; fi
+          echo "Growl excision bundle assertion: PASS (no framework, no link, no bridge symbols)"
           ditto -c -k --keepParent "$APP" Workbench-test.zip
           ls -la Workbench-test.zip
 
